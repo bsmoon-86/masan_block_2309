@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 제목태그 -->
+    <h1>index page</h1>
+    <!-- 글 문단 태그 -->
+    <p>
+        이 페이지는 index page입니다. 
+    </p>
+    <!-- 하이퍼링크 생성 -->
+    <!-- 절대 주소를 사용한 하이퍼링크 -->
+    <a href="https://www.google.com">구글로 이동</a>
+    <!-- 상대 주소를 사용한 하이퍼링크 -->
+    <!-- localhost:3000/second -->
+    <a href="/second">second 페이지로 이동</a>
+    <!-- 유저가 데이터를 입력하고 입력한 데이터를 웹 서버에게 보내는 태그 -->
+    <!-- 
+        action속성은 유저가 입력한 데이터를 어느 곳으로 보내줄것인가? 주소값 
+        method속성은 유저가 입력한 데이터를 어떠한 방식으로 보내줄것인가? get/post
+    -->
+    <form action="/signin" method="get">
+        <!-- 유저가 데이터를 입력하는 공간 태그 -->
+        <input type="text" name="input_name"><br>
+        <input type="password" name="input_pass"><br>
+        <!-- 제출 버튼 생성 -->
+        <input type="submit">
+    </form>
+</body>
+</html>
