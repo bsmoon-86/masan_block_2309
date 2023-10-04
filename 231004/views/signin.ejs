@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        Signin Page
+    </h1>
+    <!-- 유저가 데이터를 입력하고 서버에게 데이터를 보내주는 공간 -->
+    <form action="/signin2" method="get">
+        <!-- ID, PASSWORD 입력하는 공간 -->
+        <label>ID</label>
+        <input type="text" name="_id" ><br>
+        <label>Password</label>
+        <input type="password" name="_pass"><br>
+        <!-- 유저가 입력한 데이터를 서버에게 요청하는 버튼 -->
+        <input type="submit">
+    </form>
+    <!-- 
+        서버와 유저간의 데이터는 json형태로 요청, 응답 메시지로 이루어져있다.
+        json -> {
+            key : value, 
+            key2 : value2, ....
+        }
+     -->
+</body>
+</html>
