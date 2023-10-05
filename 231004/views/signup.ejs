@@ -11,7 +11,8 @@
     </h1>
     <form action="/signup2" method="post">
         <label>ID</label>
-        <input type="text" name="_id"><br>
+        <!-- 서버가 유저에게 보내는 아이디 값을 대입, 해당하는 입력 공간은 수정이 불가능 -->
+        <input type="text" name="_id" value="<%=server_id%>" readonly><br>
         <label>Password</label>
         <input type="password" name="_pass"><br>
         <label>Name</label>

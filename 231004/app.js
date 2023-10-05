@@ -49,6 +49,18 @@ const smartcontract = new web3.eth.Contract(
     contract_address
 )
 
+// 가나슈 네트워크에 저장되어있는 지갑의 주소들을 로드 
+let address
+web3.eth.getAccounts(function(err, result){
+    if(err){
+        console.log(err)
+    }else{
+        console.log(result)
+        address = result
+    }
+})
+
+
 // api 생성 -> 요청 목록
 app.get("/", function(req, res){
     // req : 유저가 서버에게 보낸 요청 메시지
@@ -84,7 +96,11 @@ app.get("/check_id", function(req, res){
     .then(function(result){
         // result는 사용 가능한 아이디라면 true -> 회원 정보를 입력하는 페이지로 이동
         if (result){
-            res.render('signup.ejs')
+            // 유저에게 signup.ejs와 데이터를 응답 메시지로 보낸다. 
+            res.render('signup.ejs', {
+                // check_id page에서 유저가 입력한 아이디 값을 다시 유저에게 보낸다.
+                server_id : _id
+            })
         }
         // 사용 불가능 아이디라면 false -> 아이디 중복 체크 하는 페이지로 이동
         else{
@@ -120,9 +136,16 @@ app.get("/signin2", function(req, res){
         // _pass : 유저가 입력한 비밀번호
         // 유저가 입력한 비밀번호가 비어있는 값이 아니라면
         if (_pass == result['password'] & _pass != "" & _id == result['id'] ){
-            res.send('로그인 성공')
+            // 로그인이 성공한 경우 회원 정보 수정 페이지로 이동
+            // res.send('로그인 성공')
+            // 회원 정보를 수정하는 경우는 기존의 회원 정보를 ejs 파일과 함께 보내준다. 
+            res.render('update_user.ejs', {
+                data : result
+            })
         }else{
-            res.send('로그인 실패')
+            // 로그인이 실패한 경우는 로그인 페이지로 이동
+            // res.send('로그인 실패')
+            res.redirect('/signin')
         }
     })
 
@@ -176,7 +199,7 @@ app.post("/signup2", function(req, res){
     .send(
         {
             // 누가 지불할것인가? (가나슈에 있는 첫번째 지갑 주소)
-            from : '0x56B99AFCdB2341b87515D501546b138Bf094F25F',
+            from : address[0],
             // 최대 얼마까지 지불할것인가?
             gas : 2000000
         }
