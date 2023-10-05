@@ -63,9 +63,37 @@ app.get("/", function(req, res){
 app.get("/signin", function(req, res){
     res.render('signin.ejs')
 })
-// 회원가입 페이지로 이동하는 api
+// 사용 가능한 아디를 조회 페이지로 이동하는 api
 app.get("/signup", function(req, res){
-    res.render('signup.ejs')
+    res.render('check_id.ejs')
+})
+
+// 아이디 중복체크를 하는 api 생성
+app.get("/check_id", function(req, res){
+    // 유저가 보낸 아이디 정보를 변수에 할당&확인
+    const _id = req.query._id
+    console.log(_id)
+
+    // 유저가 입력한 id값을 받아온 이유?
+    // 아이디가 사용 가능한 아이디인가를 확인
+    // smartcontract 안에 있는 check_id()함수를 호출하여 아이디 사용 유무를 확인
+    smartcontract
+    .methods
+    .check_id(_id)
+    .call()
+    .then(function(result){
+        // result는 사용 가능한 아이디라면 true -> 회원 정보를 입력하는 페이지로 이동
+        if (result){
+            res.render('signup.ejs')
+        }
+        // 사용 불가능 아이디라면 false -> 아이디 중복 체크 하는 페이지로 이동
+        else{
+            // /signup 주소로 이동
+            res.redirect("/signup")
+        }
+        // console.log(result)
+        // res.send(result)
+    })
 })
 
 // 로그인 정보를 확인하여 로그인 성공 실패 여부를 확인하는 api 
@@ -90,7 +118,8 @@ app.get("/signin2", function(req, res){
         console.log(result['password'])
         // result['password'] -> 가나슈네트워크에 저장되어있는 유저의 비밀번호
         // _pass : 유저가 입력한 비밀번호
-        if (_pass == result['password']){
+        // 유저가 입력한 비밀번호가 비어있는 값이 아니라면
+        if (_pass == result['password'] & _pass != "" & _id == result['id'] ){
             res.send('로그인 성공')
         }else{
             res.send('로그인 실패')
