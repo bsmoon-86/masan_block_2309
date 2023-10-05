@@ -63,5 +63,13 @@ contract User{
             return false;
         }
     }
+    // 회원 정보를 출력해주는 함수 (하나의 회원정보를 출력)
+    function view_user(string memory _id) public view returns (user_info memory){
+        // 되돌려주는 데이터는 mapping data인 users에서 키 값이 _id인 value를 출력
+        // 동적 타입의 언어 : 변수 생성 시 데이터의 타입을 지정하지 않는다.(js, python) -> const, let
+        // 정적 타입의 언어 : 변수 생성 시 데이터의 타입을 지정해야 된다. (java, c, solidity) -> string, uint, bool
+        user_info memory result = users[_id];
+        return result;
+    } 
 
 }

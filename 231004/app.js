@@ -72,18 +72,57 @@ app.get("/signup", function(req, res){
 app.get("/signin2", function(req, res){
     // 유저가 서버에게 보낸 데이터를 변수에 대입 
     // get 방식으로 보낸 데이터는 req안에 query : { _id : id, _pass : password }
-    console.log(req)
+    // console.log(req)
     console.log(req.query)
     const _id = req.query._id
     const _pass = req.query._pass
     console.log(_id, _pass)
-    // id가 test 이고 password가 1234인 경우 로그인 성공
-    // 그 외의 경우에는 로그인 실패
-    if (_id == 'test' & _pass == '1234'){
-        res.send('로그인 성공')
-    }else{
-        res.send('로그인 실패')
+
+    // smartcontract는 가나슈네트워크에 배포한 컨트렉트의 정보
+    smartcontract
+    // .methods는 컨트렉트 안에 있는 함수들
+    .methods
+    // .view_user()라는 함수를 호출
+    .view_user(_id)
+    // 데이터가 변경이 되는것이 아니라 데이터를 조회하는 함수 -> transaction이 발생하지 않는다. -> 수수료가 발생하지 않는다. 
+    .call()
+    .then(function(result){
+        console.log(result['password'])
+        // result['password'] -> 가나슈네트워크에 저장되어있는 유저의 비밀번호
+        // _pass : 유저가 입력한 비밀번호
+        if (_pass == result['password']){
+            res.send('로그인 성공')
+        }else{
+            res.send('로그인 실패')
+        }
+    })
+
+    // 유저가 입력한 _id 값을 smartcontract에 있는 view_user() 함수의 매개변수로 호출한 결과 값이
+    // users라는 mapping data에 있는 특정 키(유저가 입력한 id값) 값의 데이터(user_info라는 구조체)를 되돌려준다. 
+    // user_info는 id, password, name, tel, loc, gender, email, abled의 키값을 가지는 데이터
+    // user_info 안에 있는 password의 값과 유저가 입력한 _pass의 값이 같다면 로그인이 성공
+
+    // 같지 않다면 로그인이 실패
+
+    // mapping data의 구조 -> { key  : value , key2 : value2 }
+    // mapping ( string => uint ) ->  {  key(string) : value(uint), key2(string) : value2(uint) }
+    // struct 구조체(데이터 타입) -> { key : value, key2 : value2 }
+    // { name : 'test', age : 20 }
+    // struct ( string name; uint age; ) -> { name : value(string), age : value2(uint) }
+    /* mapping (string => struct) -> 
+    { 
+        key(string타입) : { 
+            name : value(string타입), 
+            age : value2(uint타입)
+        }, 
+        key2(string타입) : {
+            name : value(string타입), 
+            age : value2(uint타입)
+        }
     }
+
+    */
+
 })
 
 // 회원가입 정보를 받아오는 api 생성 
@@ -108,7 +147,7 @@ app.post("/signup2", function(req, res){
     .send(
         {
             // 누가 지불할것인가? (가나슈에 있는 첫번째 지갑 주소)
-            from : '0x14942A41849B4f5898185Ef654A14AE3B77Da227',
+            from : '0x56B99AFCdB2341b87515D501546b138Bf094F25F',
             // 최대 얼마까지 지불할것인가?
             gas : 2000000
         }
