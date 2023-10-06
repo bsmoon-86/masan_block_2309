@@ -212,6 +212,38 @@ app.post("/signup2", function(req, res){
 
 })
 
+// 회원 정보를 수정하는 api 생성
+app.post("/update_user", function(req, res){
+    // 유저가 보낸 데이터를 변수에 대입 & 확인
+    const _id = req.body._id
+    const _pass = req.body._pass
+    const _name = req.body._name
+    const _tel = req.body._tel
+    const _loc = req.body._loc
+    const _gender = req.body._gender
+    const _email = req.body._email
+    console.log(_id, _pass, _name, _tel, _loc, _gender, _email)
+
+    // 기존의 회원의 정보를 수정하기 위한 함수를 호출 
+    // smartcontract 안에 있는 update_user() 함수를 호출
+    // 데이터의 변화가 존재하는 함수 -> transaction 발생 -> 수수료 발생
+    smartcontract
+    .methods
+    .update_user(_id, _pass, _name, _tel, _loc, _gender, _email)
+    .send(
+        {
+            from : address[0], 
+            gas : 2000000
+        }
+    )
+    .then(function(result){
+        console.log(result)
+        // 회원 정보 수정이 완료되면 로그인 화면으로 되돌아간다. 
+        res.redirect("/signin")
+    })
+
+})
+
 
 // 웹서버 실행
 app.listen(port, function(){
