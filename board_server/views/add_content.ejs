@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 테이블 태그를 이용하여 데이터 입력 공간 생성 -->
+    <form action="/board/add_content2" method="post">
+        <!-- 
+            post 방식을 사용하는 이유는 
+            get 방식으로 데이터를 서버에게 보내주면 글자의 제한이 걸린다. 
+        -->
+        <table border="1">
+            <tr>
+                <th>글 제목</th>
+                <td>
+                    <input type="text" name="_title">
+                </td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td>
+                    <input type="text" name="_writer">
+                </td>
+            </tr>
+            <tr>
+                <th>본문</th>
+                <td>
+                    <textarea style="width:500px;height:300px;" name="_content"></textarea>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="등록">
+    </form>
+</body>
+</html>
