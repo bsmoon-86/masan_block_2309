@@ -71,7 +71,7 @@ module.exports = function(){
 
             })
         }
-        
+
         console.log(content_list)   // {}
         res.render('board.ejs', {
             'content_no' : no, 
@@ -113,6 +113,23 @@ module.exports = function(){
             console.log(result)
             // 글 목록으로 이동
             res.redirect('/board')
+        })
+    })
+
+    router.get('/view_content', async function(req, res){
+        // 유저가 보낸 데이터를 변수에 할당 & 확인 
+        const no = req.query.no
+        console.log(no)
+
+        const result = await smartcontract
+        .methods
+        .view_content(no)
+        .call()
+
+        console.log(result)
+
+        res.render("view_content.ejs" ,{
+            "data" : result
         })
     })
 

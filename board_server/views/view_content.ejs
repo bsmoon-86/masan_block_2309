@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>
+                글 제목
+            </th>
+            <td>
+                <%=data.title%>
+            </td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td>
+                <%=data.writer%>
+            </td>
+        </tr>
+        <tr>
+            <th>작성 시간</th>
+            <td><%=data.time%></td>
+        </tr>
+        <tr>
+            <th>본문</th>
+            <td><%=data.content%></td>
+        </tr>
+
+    </table>
+</body>
+</html>

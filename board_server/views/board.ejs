@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+        function view_content(_no){
+            // 다른 주소를 요청 
+            location.href = "/board/view_content?no="+_no
+        }
+    </script>
 </head>
 <body>
     <!-- 글 쓰기 버튼 생성 -->
@@ -39,7 +45,7 @@
                 <% let key =  Object.keys(contents)[i]%>
                 <%=key%>
             </td>
-            <td>
+            <td onclick="view_content('<%=key%>')">
                 <%=contents[key].title%>
             </td>
             <td>
