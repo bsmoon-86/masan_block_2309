@@ -37,6 +37,40 @@ contract Board{
         no++;
     }
 
+    // 게시글을 수정하는 함수
+    function update_contents(
+        uint _no, 
+        string memory _title, 
+        string memory _writer, 
+        string memory _content
+    ) public {
+        // 게시글이 존재하는가?
+        // mapping data에 입력받은 키 값으로 데이터를 출력하였을때 
+        // 데이터가 존재하는가?(데이터의 길이가 0이 아니라면)
+        require(bytes(contents[_no].title).length != 0, "Error");
+        // 게시글을 작성한 사람인가?
+        bytes memory writer = bytes(contents[_no].writer);
+        bytes memory writer2 = bytes(_writer);
+        require(keccak256(writer) == keccak256(writer2), "Writer not match");
+        contents[_no].title = _title;
+        contents[_no].content = _content;
+    }
+
+    // 게시글 삭제 함수
+    function delete_contetns(
+        uint _no, 
+        string memory _writer
+    )public {
+        // 게시글중 해당하는 키 값에 데이터가 존재하는가?
+        require(bytes(contents[_no].title).length != 0, "Error");
+        bytes memory writer = bytes(contents[_no].writer);
+        bytes memory writer2 = bytes(_writer);
+        require(keccak256(writer) == keccak256(writer2), "Writer not match");
+        // 게시글을 제거 
+        delete contents[_no];
+    }
+
+
     // 게시글을 조회하는 함수 
     function view_content(
         uint _no

@@ -55,6 +55,20 @@ contract User{
         }
     }
 
+    // 회원 탈퇴하는 함수 
+    function delete_user(
+        string memory _id, 
+        string memory _pass
+    )public {
+        // 회원 정보가 존재하는가?
+        require(users[_id].abled == 1, 'not exist user');
+        // 회원의 비밀번호가 일치하는가?
+        bytes memory password = bytes(users[_id].password);
+        bytes memory password2 = bytes(_pass);
+        require(keccak256(password) == keccak256(password2), "Password not match");
+        delete users[_id];
+    }
+
     // 아이디 중복 체크를 하는 함수
     function check_id(string memory _id) public view returns (bool) {
         if (users[_id].abled == 0){
