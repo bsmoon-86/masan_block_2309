@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function signup(){
+            location.href = "/user/signup"
+        }
+    </script>
+</head>
+<body>
+    <form action="/user" method="post">
+        <table>
+            <tr>
+                <th>ID</th>
+                <td>
+                    <input type="text" name="_id" required>
+                </td>
+            </tr>
+            <tr>
+                <th>PASSWORD</th>
+                <td>
+                    <input type="password" name="_pass" required>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="로그인">
+    </form>
+    <button onclick="signup()">회원가입</button>
+</body>
+</html>

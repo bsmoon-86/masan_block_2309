@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+        function update_content(_no){
+            location.href = '/board/update_content/'+_no
+        }
+        function board(){
+            location.href = '/board'
+        }
+    </script>
 </head>
 <body>
+    <!-- 글 목록으로 되돌아가는 버튼 -->
+    <button onclick="board()">글 목록</button>
+    <!-- 작성자와 로그인을 한 아이디 값이 같은 경우 글 수정 버튼을 보여준다. -->
+    <% if(data.writer == id){ %>
+        <button onclick="update_content('<%=no%>')">글 수정</button>
+    <% } %>
     <table>
         <tr>
             <th>
