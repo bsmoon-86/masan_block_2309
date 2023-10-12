@@ -123,6 +123,56 @@ module.exports = function(){
         })
     })
 
+    // 회원 탈퇴 api(localhost:3000/user/delete_user) 생성
+    router.get('/delete_user', function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // status 값이 존재하는 경우 
+            if(req.query.status){
+                result = '패스워드가 일치하지 않습니다.'
+            }
+            // 존재하지 않는 경우
+            else{
+                result = ''
+            }
+            res.render('delete_user.ejs', {
+                'data' : result
+            })
+        }
+    })
+
+    router.post('/delete_user2', async function(req, res){
+        if(!req.session.logined){
+            res.redirect("/")
+        }else{
+            // 유저가 보낸 패스워드를 변수에 대입 확인
+            const password = req.body._pass
+            console.log(password)
+            // 유저가 입력한 패스워드와 로그인을 한 정보의 패스워드가 같은가?
+            if(password == req.session.logined[1]){
+                // smartcontract 안에 있는 delete_user()함수 호출
+                const result = await smartcontract
+                                .methods
+                                .delete_user(
+                                    req.session.logined[0], 
+                                    password
+                                )
+                                .send(
+                                    {
+                                        from : address[0], 
+                                        gas : 2000000
+                                    }
+                                )
+                console.log(result)
+                res.redirect('/user/logout')
+            }else{
+                // res.send('패스워드가 맞지 않습니다.')
+                res.redirect('/user/delete_user?status=F')
+            }
+        }
+    })
+
 
     return router
 }
