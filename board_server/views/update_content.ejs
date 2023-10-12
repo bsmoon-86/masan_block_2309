@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/board/update_content2" method="post">
+        <div style="display: none;">
+            <input type="text" name="_no" value="<%=no%>" readonly>
+        </div>
+        <table>
+            <tr>
+                <th>글 제목</th>
+                <td>
+                    <input type="text" name="_title" value="<%=data.title%>" required>
+                </td>
+            </tr>
+            <tr>
+                <th>작성자</th>
+                <td>
+                    <input type="text" name="_writer" value="<%=data.writer%>" readonly>
+                </td>
+            </tr>
+            <tr>
+                <th>본문</th>
+                <td>
+                    <textarea name="_content" style="width:500px;height:300px;"><%=data.content%></textarea>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="글 수정">
+    </form>
+</body>
+</html>

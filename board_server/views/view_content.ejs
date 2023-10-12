@@ -7,9 +7,14 @@
     <script>
         function update_content(_no){
             location.href = '/board/update_content/'+_no
+            // 글번호 1번 인 경우 
+            // /board/update_content/1
         }
         function board(){
             location.href = '/board'
+        }
+        function delete_content(_no){
+            location.href = '/board/delete_content/'+_no
         }
     </script>
 </head>
@@ -19,6 +24,7 @@
     <!-- 작성자와 로그인을 한 아이디 값이 같은 경우 글 수정 버튼을 보여준다. -->
     <% if(data.writer == id){ %>
         <button onclick="update_content('<%=no%>')">글 수정</button>
+        <button onclick="delete_content('<%=no%>')">글 삭제</button>
     <% } %>
     <table>
         <tr>

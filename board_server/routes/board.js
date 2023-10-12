@@ -72,14 +72,16 @@ module.exports = function(){
                     // console.log(result)
                     // result -> 글 하나의 정보
                     // result들을 모아서 하나의 변수에 대입
-                    content_list[i] = result
+                    // result의 항목이 데이터가 존재하지 않는다면 content_list 추가하지 않는다.
+                    if(result.title != ""){
+                        content_list[i] = result
+                    }
 
                 })
             }
 
             console.log(content_list)   // {}
             res.render('board.ejs', {
-                'content_no' : no, 
                 'contents' : content_list
             })
         }
@@ -154,6 +156,91 @@ module.exports = function(){
                 "id" : req.session.logined[0], 
                 'no' : no
             })
+        }
+
+    })
+
+    // localhost:3000/board/update_content/글번호 요청 시
+    router.get('/update_content/:_no', async function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // 유저가 보낸 글번호를 변수에 대입& 확인
+            const no = req.params._no
+            console.log(no)
+
+            // 해당하는 글의 정보를 로드하여 유저에게 다시 보낸다. 
+            const result = await smartcontract
+                            .methods
+                            .view_content(no)
+                            .call()
+            
+            console.log(result)
+
+            res.render('update_content.ejs', {
+                'data' : result, 
+                'no' : no
+            })
+        }
+    })
+
+    // localhost:3000/board/update_content2[post] api 생성
+    router.post('/update_content2', async function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // 유저가 서버에게 보낸 데이터를 변수에 대입&확인
+            const no = req.body._no
+            const title = req.body._title
+            const writer = req.body._writer
+            const content = req.body._content
+            console.log(no, title, writer, content)
+
+            // smartcontract 안에 있는 update_content()함수를 호출하여 데이터를 변경
+            const result = await smartcontract
+                            .methods
+                            .update_contents(
+                                no, title, writer, content
+                            )
+                            .send(
+                                {
+                                    from : address[0], 
+                                    gas : 2000000
+                                }
+                            )
+            console.log(result)
+
+            // 수정한 게시글의 정보를 볼수 있는 페이지로 이동('/board/view_content')
+            res.redirect('/board/view_content?no='+no)
+        }
+    })
+
+    // localhost:3000/board/delete_content api 생성
+    router.get('/delete_content/:_no', async function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // 글번호
+            const no = req.params._no
+            console.log(no)
+            // 작성자는 어디에서 찾아야되는것인가?
+            // 로그인을 한 아이디 값
+            const writer = req.session.logined[0]
+            console.log(writer)
+
+            const result = await smartcontract
+                            .methods
+                            .delete_contetns(
+                                no, writer
+                            )
+                            .send(
+                                {
+                                    from  : address[0], 
+                                    gas : 2000000
+                                }
+                            )
+            console.log(result)
+            res.redirect('/board')
         }
 
     })

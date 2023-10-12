@@ -40,12 +40,13 @@
                     content : xxxxx
                 }
             }
+            Object.keys(contents) -> ['1', '2'] -> ['2', '1']
         -->
         <% for (let i = 0; i < Object.keys(contents).length;i++) {%>
         <tr>
             <td>
-                <% let key =  Object.keys(contents)[i]%>
-                <%=key%>
+                <% let key =  Object.keys(contents).reverse()[i]%>
+                <%=i+1%>
             </td>
             <td onclick="view_content('<%=key%>')">
                 <%=contents[key].title%>
