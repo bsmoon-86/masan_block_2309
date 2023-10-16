@@ -19,8 +19,17 @@ const info_add_query = `
     VALUES 
     (?, ?, ?, ?)
 `
+const check_id_query = `
+    SELECT 
+    * 
+    FROM 
+    user
+    WHERE 
+    id = ?
+`
 module.exports = {
     login_query, 
     signup_query, 
-    info_add_query
+    info_add_query, 
+    check_id_query
 }
