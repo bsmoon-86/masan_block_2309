@@ -14,8 +14,12 @@
     </script>
 </head>
 <body>
-    <button onclick="add_content()">글 쓰기</button>
-    <button onclick="add_info()">회원 정보 등록</button>
+    <!-- javascript를 이용하여 서버가 보내준 check 값을 비교하여 버튼의 생성을 다르게 한다. -->
+    <% if (check) { %>
+        <button onclick="add_content()">글 쓰기</button>
+    <% } else {%>
+        <button onclick="add_info()">회원 정보 등록</button>
+    <% } %>
     <!-- 글의 목록을 나타내는 table 태그 생성 -->
     <table border="1">
         <tr>
@@ -25,6 +29,15 @@
             <th>작성시간</th>
         </tr>
         <!-- 게시글이 존재하는 경우에 반복문을 이용해서 데이터를 추가 -->
+        <!-- data 변수의 데이터의 형태가 [{}, {}, {}] -->
+        <% for (let i = 0; i < data.length; i++) { %>
+            <tr>
+                <td><%=data[i].No%></td>
+                <td><%=data[i].title%></td>
+                <td><%=data[i].writer%></td>
+                <td><%=data[i].create_dt%></td>
+            </tr>
+        <% } %>
     </table>
 </body>
 </html>
