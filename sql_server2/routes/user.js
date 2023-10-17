@@ -13,6 +13,35 @@ module.exports = function(){
     router.get("/", function(req, res){
         res.render('login')
     })
+
+    // 로그인 api 생성
+    // localhost:3000/user/signin [post]
+    router.post('/signin', async function(req, res){
+        // 유저가 보낸 데이터를 변수에 대입 & 확인
+        const id = req.body._id
+        const pass = req.body._pass
+        console.log(id, pass)
+        // sql_list에 있는 login_query 변수를 호출하여 
+        // sql_func에 있는 execute()함수에 인자값으로 login_qeury와 [id, pass] 넣어서 호출\
+        const [result, field] = await sql_func.execute(
+            sql_list.login_query, 
+            [id, pass]
+        )
+        // result의 데이터의 형태는? -> {  }
+        // result의 길이는 0아니면 1 인 이유는? -> 
+        // user테이블에 id필드가 primary key임으로 데이터는 1개가 출력이 되거나 아니면 출력되지 않는다.
+        console.log(result)
+        // 로그인이 성공하는 조건? - > result의 길이가 1인 경우, result[0] 존재하는 경우
+        // if (result.length == 1)
+        if (result){
+            // session에 유저의 정보를 등록
+            req.session.logined = result
+            // localhost:3000/ 주소에 요청
+            res.redirect('/')
+        }else{
+            res.redirect('/user')
+        }
+    })
     
     // localhost:3000/check_id 주소로 요청시
     router.get('/check_id', function(req, res){

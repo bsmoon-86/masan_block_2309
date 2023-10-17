@@ -1,12 +1,14 @@
 // mysql에 접속 
 const mysql = require('mysql2')
 
+require('dotenv').config()
+
 const pool = mysql.createPool({
-    host : '127.0.0.1',  // 127.0.0.1 : 내 컴퓨터(localhost)
-    port : 3306, 
-    user : 'root', 
-    password : '1234', 
-    database : 'blockchain'
+    host : process.env.host,  // 127.0.0.1 : 내 컴퓨터(localhost)
+    port : process.env.port, 
+    user : process.env.user, 
+    password : process.env.db_pass, 
+    database : process.env.db_name
 })
 
 const connection = pool.promise() 

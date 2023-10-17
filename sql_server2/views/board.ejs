@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function add_content(){
+            location.href = "/board/add_content"
+        }
+        function add_info(){
+            location.href = "/user/add_info"
+        }
+    </script>
+</head>
+<body>
+    <button onclick="add_content()">글 쓰기</button>
+    <button onclick="add_info()">회원 정보 등록</button>
+    <!-- 글의 목록을 나타내는 table 태그 생성 -->
+    <table border="1">
+        <tr>
+            <th>글 번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성시간</th>
+        </tr>
+        <!-- 게시글이 존재하는 경우에 반복문을 이용해서 데이터를 추가 -->
+    </table>
+</body>
+</html>
