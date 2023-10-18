@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- jQurey 라이브러리 로드 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <!-- jQuery를 사용하는 부분 -->
+    <script>
+        // html document가 실행이 될때 
+        $(document).ready(function(){
+            // a태그를 선택하여 글자의 색상을 red 변경
+            $('a').css("color", "red")
+            // a태그에 target 속성이 존재하는 태그를 선택하여 배경색을 녹색으로 변경
+            $('a[target]').css('background', 'green')
+            // div태그 안에 있는 a태그를 선택
+            $('div a').css('font-size', '30px')
+            // div 태그 안에 있는 a태그중 href가 http://www.naver.com 인 태그
+            $('div a[href="http://www.naver.com"]').css('color', 'cyan')
+            $('div a[href!="https://www.github.com"]').css('background', 'yellow')
+
+            // 태그중 id 값이 content-로 시작되는 태그
+            $('div[id^="content-"]').css("background", 'silver')
+            // 태그중 id 값이 1로 끝나는 태그 
+            $('div[id$="1"]').css("font-size", '30px')
+            // 태그중 id 값에 area가 포함되어있는 태그
+            $('div[id*="area"]').css('color', 'white')
+
+        })
+
+        function test(){
+            // $('#text1')
+            $('p[id="text1"]').css('background', 'blue')
+        }
+    </script>
+</head>
+<body>
+    <a href="http://www.naver.com" target="_blank">네이버로 이동</a>
+    <div>
+        <a href="http://www.naver.com">네이버로 이동</a><br>
+        <a href ="http://www.google.com">구글로 이동</a><br>
+        <a href ="https://www.github.com">깃허브로 이동</a>
+    </div>
+    <button onclick="test()">Test</button>
+    <p id="text1">
+        여기는 글의 문단입니다.
+    </p>
+    <div id="content-area-1">
+        content-1 영역
+    </div>
+    <div id="content-area-2">
+        content-2 영역
+    </div>
+
+</body>
+</html>

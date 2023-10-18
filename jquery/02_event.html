@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- jQurey 라이브러리 로드 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function(){
+            var count = 0;
+            // id가 myButton인 태그를 선택하여 마우스가 해당하는 영역으로 들어왔을때와 떠났을때 이벤트 
+            $('#myButton').on("mouseenter mouseleave", function(event){
+                count++;
+                // id가 Result인 태그를 선택
+                $('#Result').text(count + "번 만큼 수행")
+                // 마우스가 해당영역에 들어왔을때 id가 Result인 태그의 배경 색을 blue 변경
+                if(event.type === "mouseenter"){
+                    $("#Result").css("background", 'blue')
+                }
+                // 마우스 해당 영역에서 벗어났을 때 id가 Result인 태그의 배경 색을 yellow 변경
+                else if(event.type === "mouseleave"){
+                    $('#Result').css('background', 'yellow')
+                }
+            })
+            
+        })
+    </script>
+
+</head>
+<body>
+    <button id = "myButton">click</button>
+    <p id="Result"></p>
+</body>
+</html>
