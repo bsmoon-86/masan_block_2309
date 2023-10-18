@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function update_content(no){
+            location.href = "/board/update_content/"+no
+        }
+        function board(){
+            // 뒤로가기
+            // history('back')
+            // /board 주소로 이동
+            location.href="/board"
+        }
+    </script>
+</head>
+<body>
+    <!-- 로그인을 한 유저가 작성자 라면 수정 버튼 생성 -->
+    <% if(data.writer == id){%>
+        <button onclick="update_content('<%=data.No%>')">수정</button>
+    <%}%>
+    <!-- 글 목록으로 이동하는 버튼 -->
+    <button onclick="board()">목록</button>
+    <table border="1">
+        <!--
+            서버에서 파일과 함께 보낸 데이터 
+            {
+                data : result
+            } 
+
+            result = [  {  } ]
+            data = [ {  } ] 
+
+            {
+                data : result[0]
+            } 
+
+            result = [  {  } ]
+            data = { }
+        -->
+        <tr>
+            <th>글 제목</th>
+            <td><%=data.title%></td> 
+        </tr>
+        <tr>
+            <th>작성자 / 작성 시간</th>
+            <td><%=data.writer%> / <%=data.create_dt%></td>
+        </tr>
+        <tr>
+            <th>본문</th>
+            <td><%=data.content%></td>
+        </tr>
+    </table>
+
+</body>
+</html>

@@ -51,7 +51,8 @@ module.exports = function(){
 
             res.render('board', {
                 check : info_check, 
-                data : board_result
+                data : board_result, 
+                id : req.session.logined.id
             })
         }
     })
@@ -88,6 +89,71 @@ module.exports = function(){
 
         res.redirect('/board')
 
+    })
+
+    // 게시글의 정보를 보여주는 페이지 api 생성
+    // localhost:3000/board/view_content/{글번호}
+    router.get('/view_content/:no', async function(req, res){
+        const No = req.params.no
+        console.log("view_content 글번호 :", No)
+
+        // 글번호에 해당하는 board table 데이터를 로드 
+        const [result, field] = await sql_func.execute(
+            sql_list.view_content_query, 
+            [No]
+        )
+        console.log('view_content query data : ', result)
+        // result는 [ { No : x ,  title : xxxx, writer : xxx, content : xxxxx, create_dt : xxxxx } ]
+        res.render('view_content', {
+            data : result[0], 
+            id : req.session.logined.id
+        })
+    })
+
+    // 게시글을 삭제하는 api 생성
+    router.get("/del_content/:no", async function(req, res){
+        const No = req.params.no
+        console.log('del_content 글번호 :', No)
+        const [result, field] = await sql_func.execute(
+            sql_list.del_content_query, 
+            [No]
+        )
+        console.log('del_content query data :', result)
+        res.redirect('/board')
+    })
+
+    // 게시글을 수정하는 화면 api 생성
+    router.get("/update_content/:no", async function(req, res){
+        const No = req.params.no
+        console.log('update_content No :', No)
+
+        const [result, field] = await sql_func.execute(
+            sql_list.view_content_query, 
+            [No]
+        )
+
+        console.log('update_content data check :', result)
+        res.render('update_content', {
+            data : result[0]
+        })
+    })
+
+    // 데이터베이스의 게시글 정보를 변경하는 api 생성
+    router.post("/update_content2", async function(req, res){
+        // 유저가 보낸 No, title, content를 변수에 대입 & 확인
+        const No = req.body._no
+        const title = req.body._title
+        const content = req.body._content
+        console.log('update_content2 data :', No, title, content)
+
+        const [result, field] = await sql_func.execute(
+            sql_list.update_content_query, 
+            [title, content, No]
+        )
+
+        console.log("update_content2 query data :", result)
+        // 게시글을 수정하고 해당하는 게시글을 확인하는 페이지로 이동
+        res.redirect('/board/view_content/'+No)
     })
 
 

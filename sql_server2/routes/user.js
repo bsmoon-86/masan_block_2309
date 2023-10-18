@@ -151,6 +151,12 @@ module.exports = function(){
         )
         console.log(result)
         // 회원 정보가 추가가 되면 board로 이동
+
+        // session data 수정 
+        req.session.logined.age = age
+        req.session.logined.gender = gender
+        req.session.logined.phone = phone
+
         res.redirect('/board')
 
     })

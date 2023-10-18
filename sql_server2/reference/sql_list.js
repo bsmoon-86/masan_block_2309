@@ -19,7 +19,12 @@ const info_query = `
 // SQL 쿼리문에서 JOIN은 2개의 테이블의 정보를 특정한 조건에 맞춰서 결합하여 보여주는 형태
 const join_login_query = `
     SELECT 
-    * 
+    user.id,
+    user.password, 
+    user.name, 
+    user_info.age, 
+    user_info.gender, 
+    user_info.phone  
     FROM 
     user 
     LEFT JOIN 
@@ -86,7 +91,23 @@ const view_content_query = `
     WHERE 
     No = ?
 `
+const del_content_query = `
+    DELETE 
+    FROM 
+    board
+    WHERE 
+    No = ?
+`
 
+const update_content_query=`
+    UPDATE 
+    board 
+    SET 
+    title = ?, 
+    content = ?
+    WHERE 
+    No = ?
+`
 
 module.exports = {
     login_query, 
@@ -98,5 +119,7 @@ module.exports = {
     join_login_query, 
     add_content_query, 
     board_query, 
-    view_content_query
+    view_content_query, 
+    del_content_query, 
+    update_content_query
 }

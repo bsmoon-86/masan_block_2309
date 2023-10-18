@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/board/update_content2" id="form" method="post" onsubmit="return false">
+        <!-- 해당하는 영역은 숨겨둔다. -->
+        <div style="display: none;">
+            <input type="text" name="_no" value="<%=data.No%>" readonly>
+        </div>
+        <table>
+            <tr>
+                <th>글 제목</th>
+                <td>
+                    <input type="text" name="_title" value="<%=data.title%>">
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    작성자 / 작성시간
+                </th>
+                <td>
+                    <%=data.writer%> / <%=data.create_dt%>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    본문
+                </th>
+                <td>
+                    <textarea name="_content" style="width: 500px;height: 300px;"><%=data.content%></textarea>
+                </td>
+            </tr>
+        </table>
+        <button id="update">수정</button>
+    </form>
+    <script>
+        // id가 update인 태그를 선택하여 변수에 대입
+        var update = document.getElementById('update')
+        // 버튼을 클릭했을때 (이벤트 생성)
+        update.addEventListener('click', function(){
+            // id가 form인 태그를 선택하여 변수에 대입
+            var form = document.getElementById("form")
+            // confirm : 예 / 아니오 선택하는 팝업
+            if(confirm("글을 수정하겠습니까?")){
+                // confirm의 예를 선택하는 경우
+                form.submit()
+            }
+        })
+    </script>
+</body>
+</html>

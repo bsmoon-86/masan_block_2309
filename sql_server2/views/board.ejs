@@ -11,6 +11,12 @@
         function add_info(){
             location.href = "/user/add_info"
         }
+        function view_content(no){
+            location.href= "/board/view_content/"+no
+        }
+        function del_content(no){
+            location.href= "/board/del_content/"+no
+        }
     </script>
 </head>
 <body>
@@ -29,13 +35,20 @@
             <th>작성시간</th>
         </tr>
         <!-- 게시글이 존재하는 경우에 반복문을 이용해서 데이터를 추가 -->
-        <!-- data 변수의 데이터의 형태가 [{}, {}, {}] -->
+        <!-- data 변수의 데이터의 형태가 [{No : x, title : xxx, writer: xxx, create_dt : xxxx}, {}, {}] -->
+        <!-- 게시글 목록에서 제목 부분을 클릭했을때 해당 글의 본문의 내용을 볼수 있는 페이지로 이동 -->
+        <!-- 게시글 중 내가 작성한 게시글에는 삭제 버튼을 추가 -->
+        <!-- 내가 작성한 게시글인가를 확인하는 방법? session의 id값과 게시글의 writer와 같은가  -->
         <% for (let i = 0; i < data.length; i++) { %>
             <tr>
                 <td><%=data[i].No%></td>
-                <td><%=data[i].title%></td>
+                <td onclick="view_content('<%=data[i].No%>')" ><%=data[i].title%></td>
                 <td><%=data[i].writer%></td>
                 <td><%=data[i].create_dt%></td>
+                <!-- 작성자와 로그인을 한 session의 id가 같다면 삭제 버튼을 추가 -->
+                <% if (data[i].writer == id) {%>
+                    <td><button onclick="del_content('<%=data[i].No%>')">삭제</button></td>
+                <% } %>
             </tr>
         <% } %>
     </table>
