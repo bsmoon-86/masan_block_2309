@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        function checkCha(obj){
+            // obj는 element를 입력 값으로 받아오는 함수
+            var RegExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+            // test() : 해당하는 값이 포함되어있다면 true / 포함되어있지 않다면 false
+            if(RegExp.test(obj.value)){
+                // 특수문자를 제거 
+                obj.value = obj.value.replace(RegExp, '');
+            }
+        }
+        // 입력받은 데이터가 문자, 숫자, 특수문자로 이루어져있는가? 
+        // 비밀번호의 자리수가 8자리 이상인가?
+        function checkPassword(str){
+            var pattern1 = /[0-9]/     // 0부터 9까지의 숫자
+            var pattern2 = /[a-zA-Z]/  // 영문자 
+            var pattern3 = /[~!@#$%^&*()<>?:{}]/  // 특수문자
+            console.log(str)
+            // 해당하는 4가지의 조건이 모두 만족하는 경우 사용 가능 패스워드
+            if(pattern1.test(str) && pattern2.test(str) && pattern3.test(str) && str.length >= 8){
+                console.log(true)
+                return true
+            }else{
+                console.log(false)
+                return false
+            }
+        }
+    </script>
+</head>
+<body>
+    <form action="#" method="get">
+        <label>ID</label>
+        <input type="text" name="_id" id="_id" onkeydown="checkCha(this)"><br>
+        <label>PASSWORD</label>
+        <input type="password" name="_pass" id="_pass"><br>
+        <label>Confirm PASSWORD</label>
+        <input type="password" id="_confirm"><br>
+        <p id="check_pass">
+            
+        </p>
+        <!-- 비밀번호도 정상적인 비밀번호여야 하고 비밀번호와 비밀번호 확인이 같은 경우에만 submit 버튼 활성화 -->
+        <input type="submit" id="_submit" disabled>
+    </form>
+    <script>
+        $('#_pass').keyup(function(){
+            var password = $(this).val()
+            if(!checkPassword(password)){
+                $('#check_pass').text("비밀번호는 8자리 이상 문자, 숫자, 특수문자가 포함되어있어야 합니다.")
+            }else{
+                $('#check_pass').text("")
+            }
+        })
+        $('#_confirm').keyup(function(){
+            var password = $('#_pass').val()
+            var confirm = $(this).val()
+            if(password == confirm){
+                $('#check_pass').text("비밀번호가 일치")
+                // submit 버튼을 활성화
+                $('#_submit').attr('disabled', false)
+            }else{
+                $('#check_pass').text("비밀번호 불일치")
+                $('#_submit').attr('disabled', true)
+            }
+        })
+    </script>
+</body>
+</html>

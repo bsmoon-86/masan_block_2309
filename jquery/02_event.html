@@ -24,6 +24,17 @@
                     $('#Result').css('background', 'yellow')
                 }
             })
+
+            // 초점이 맞춰줬을때 이벤트 
+            // input태그가 포커스되었을때 배경 색 변경
+            $('input').focus(function(){
+                // this : 이것 -> 포커스되어있는 인풋 태그(자기 자신)
+                $(this).css('background', 'silver')
+            })
+            // 포커스를 잃었을때
+            $('input').blur(function(){
+                $(this).css('background', 'white')
+            })
             
         })
     </script>
@@ -32,5 +43,8 @@
 <body>
     <button id = "myButton">click</button>
     <p id="Result"></p>
+
+    <input type="text">
+    <input type="text">
 </body>
 </html>

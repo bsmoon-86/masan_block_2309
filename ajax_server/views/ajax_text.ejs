@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <input type="text" id="input_id">
+    <span id="check_id"></span>
+    <button>ajax 통신</button>
+    <script>
+        // 버튼 태그를 선택하여 버튼이 클릭 됬을때 이벤트
+        $('button').click(function(){
+            var id = $('#input_id').val()
+            // ajax을 이용한 비동기 통신
+            // localhost:3000/data[post] 요청을 보낸다. 
+            // body에 담은 데이터는 {'input_id' : id}
+            // 데이터의 형태는 json으로 받아온다
+            jQuery.ajax(
+                {
+                    url : '/data', 
+                    method : 'post', 
+                    dataType : 'json', 
+                    data : {
+                        'input_id' : id
+                    }
+                }
+            )
+            // 통신이 완료되고 결과값을 받아오는 부분
+            .then(function(result){
+                // result : 서버에서 보내는 결과 값
+                $('#check_id').text(result.data)
+            })
+        })
+    </script>
+</body>
+</html>

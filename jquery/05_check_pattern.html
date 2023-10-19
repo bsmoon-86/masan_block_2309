@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        // 입력받은 데이터가 문자, 숫자, 특수문자로 이루어져있는가? 
+        // 비밀번호의 자리수가 8자리 이상인가?
+        function checkPassword(str){
+            var pattern1 = /[0-9]/     // 0부터 9까지의 숫자
+            var pattern2 = /[a-zA-Z]/  // 영문자 
+            var pattern3 = /[~!@#$%^&*()<>?:{}]/  // 특수문자
+            console.log(str)
+            // 해당하는 4가지의 조건이 모두 만족하는 경우 사용 가능 패스워드
+            if(pattern1.test(str) && pattern2.test(str) && pattern3.test(str) && str.length >= 8){
+                console.log(true)
+                return true
+            }else{
+                console.log(false)
+                return false
+            }
+        }
+    </script>
+</head>
+<body>
+    <input type="password" id="input_pass" onkeyup="checkPassword(this.value)">
+    <input type="password" id="input_pass2">
+    <span id="check_pass" ></span>
+    <script>
+        $('#input_pass2').keyup(function(){
+            var text = $(this).val()
+            if(checkPassword(text)){
+                // 사용 가능한 비밀번호 라면
+                $('#check_pass').text("사용 가능한 비밀번호입니다. ")
+            }else{
+                $('#check_pass').text('사용 불가능한 비밀번호입니다. ')
+            }
+        })
+    </script>
+</body>
+</html>
