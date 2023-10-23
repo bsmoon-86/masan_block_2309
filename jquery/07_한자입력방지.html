@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+        function test(obj){
+            const str = obj.value
+
+            for (let i = 0; i < str.length; i++){
+                let c = escape(str.charAt(i))
+                c = c.replace('%', '')
+                if(c > 'u4E00' && c < 'u9FFF'){
+                    alert('한자 제한')
+                    obj.value = str.slice(0, -1)
+                    break
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>한자 입력 방지</h1>
+    <input type="text" id="input1">
+    <input type="text" onkeyup="test(this)">
+    <script>
+        // id가 input1인 태그를 선택하여 keyup() 이벤트 리스너 생성
+        $('#input1').keyup(function(){
+            // input1에 입력된 값을 str에 대입
+            const str = $(this).val()
+            // console.log(str)
+            // 문자열들을 하나씩 확인하여 한자가 존재하는가 확인 
+            for (let i = 0; i < str.length; i++){
+                // 문자 하나를 유니코드 형으로 변환
+                let c = escape(str.charAt(i))
+                // console.log(c)
+                c = c.replace('%', '')
+                // console.log(c)
+                if(c > 'u4E00' && c < 'u9FFF'){
+                    alert('한자 제한')
+                    // 한자가 입력되었다면 해당하는 입력값을 제거 
+                    console.log(str.slice(0, -1))
+                    $(this).val(str.slice(0, -1))
+                    break;
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

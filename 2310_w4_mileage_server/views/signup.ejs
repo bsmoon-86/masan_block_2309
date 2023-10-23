@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- sweetalert2 파일(js, css)을 로드  -->
+    <script src="/js/sweetalert2.js"></script>
+    <link rel="stylesheet" href="/css/sweetalert2.css">
+    <!-- jquery 파일 로드 -->
+    <script src="/js/jquery.js"></script>
+    <!-- bootstrap 로드 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script>
+        $(document).ready(function(){
+
+            // id가 check_alert_id, check_alert_pass, user_info 태그를 선택하여 숨긴다.
+            $('#check_alert_id').hide()
+            $('#check_alert_pass').hide()
+            $('#user_info').hide()
+
+            // id가 check_id인 태그를 클릭 했을때 
+            $('#check_id').click(function(){
+                // id가 input_id인 태그의 value를 불러온다. 
+                const input_id = $('#input_id').val()
+                // Ajax를 이용하여 아이디값을 서버에게 비동기통신으로 보낸다. 
+                $.ajax(
+                    {
+                        url : "/user/check_id", 
+                        method : "post", 
+                        dataType : 'json', 
+                        data : {
+                            '_id' : input_id
+                        }
+                    }
+                )
+                .done(function(result){
+                    // 결과값을 result 담아서 콜백 함수가 실행
+                    // result는 data : bool
+                    // true인 경우 사용 가능 아이디 
+                    // false인 경우 사용 불가 아이디
+                    if(result.data){
+                        // sweetalert2를 이용하여 alert창을 생성
+                        Swal.fire(
+                            '사용 가능 아이디', 
+                            '회원 정보를 입력해주세요', 
+                            'success'
+                        )
+                        // id가 check_alert_id인 태그에 사용 가능 아이디 텍스트 추가 보여준다.
+                        $('#check_alert_id').text('사용 가능 아이디').show()
+                        // id가 user_info인 태그를 보여준다
+                        $('#user_info').show()
+                        // id가 input_id 태그를 읽기 전용으로 변경
+                        $('#input_id').attr('readonly', true)
+                        // id가 check_id인 버튼을 숨긴다.
+                        $('#check_id').hide()
+                        $('#check_alert_id').addClass('alert-primary')
+                        $('#check_alert_id').removeClass('alert-danger')
+                    }else{
+                        Swal.fire(
+                            '사용 불가능 아이디', 
+                            '아이디를 다시 입력해주세요', 
+                            'error'
+                        )
+                        // id가 check_alert_id인 태그에 사용 불가능 아이디 텍스트 추가 보여준다
+                        $('#check_alert_id').text('사용 불가능 아이디').show()
+                        // toggleClass(class명) : 해당하는 클래스가 존재하면 제거, 존재하지 않으면 추가 
+                        $('#check_alert_id').removeClass('alert-primary')
+                        $('#check_alert_id').addClass('alert-danger')
+                    }
+                })
+            })
+
+            // password check 부분 
+            // id가 confirm_pass인 태그를 선택하여 키가 입력되었을때 
+            $('#confirm_pass').keyup(function(){
+                // id가 input_pass인 태그의 value 로드 
+                const input_pass = $('#input_pass').val()
+                const confirm_pass = $(this).val()
+
+                // 두 데이터가 같은 경우, input_pass 값이 존재하는 경우
+                if(input_pass && input_pass == confirm_pass){
+                    // id가 check_alert_pass인 태그를 보여준다 
+                    // 비밀번호가 일치 문자 추가 
+                    $('#check_alert_pass').text('비밀번호 일치').show()
+                    $('#check_alert_pass').addClass('alert-primary')
+                    $('#check_alert_pass').removeClass('alert-danger')
+                }else{
+                    $('#check_alert_pass').text('비밀번호 불일치').show()
+                    $('#check_alert_pass').removeClass('alert-primary')
+                    $('#check_alert_pass').addClass('alert-danger')
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign up</h1>
+        <!-- id를 입력하는 부분 -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">ID</span>
+            <input type="text" class="form-control" id="input_id" aria-describedby="basic-addon1">
+            <button id="check_id" class="btn btn-primary">아이디 체크</button>
+        </div>
+        <div id="check_alert_id" class="alert alert-primary" role="alert">
+        </div>
+        <div id="user_info">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon2">PASSWORD</span>
+                <input type="password" id="input_pass" class="form-control" aria-describedby="basic-addon2">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon3">CONFIRM</span>
+                <input type="password" id="confirm_pass" class="form-control" aria-describedby="basic-addon3">
+            </div>
+            <div id="check_alert_pass" class="alert alert-primary" role="alert">
+            </div>
+            <!-- 이름을 입력하는 부분 -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon4">NAME</span>
+                <input type="text" class="form-control" aria-describedby="basic-addon4" required>
+            </div>
+            <input type="submit" class="btn btn-primary" disabled>
+        </div>
+    </div>
+</body>
+</html>
