@@ -45,5 +45,20 @@ module.exports = function(){
 
     })
 
+    // 회원 정보를 받아오는 api 생성 (localhost:3000/user/signup2 [post])
+    router.post('/signup2', async function(req, res){
+        const id = req.body._id
+        const pass = req.body._pass
+        const name = req.body._name
+        console.log('url:/signup2, method:post, data :',id, pass, name)
+        const [result, field] = await sql_func(
+            sql_list.signup_query, 
+            [id, pass, name]
+        )
+        console.log('url : /signup2, SQL result :', result)
+        // 로그인 페이지로 이동
+        res.redirect('/')
+    })
+
     return router
 }

@@ -30,6 +30,10 @@ const user = require('./routers/user')()
 // localhost:3000/user로 시작하는 주소 값들은 user.js에 있는 router에서 처리
 app.use('/user', user)
 
+// 마일리지 관련 api들은 /mileage 주소에서 모두 사용
+const mileage = require('./routers/mileage')()
+app.use('/mileage', mileage)
+
 
 
 app.listen(port, function(){
