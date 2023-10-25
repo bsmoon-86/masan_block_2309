@@ -20,9 +20,32 @@ app.use('/node', express.static('node_modules'))
 // dotenv 설정
 require('dotenv').config()
 
+// session을 설정
+const session = require('express-session')
+
+app.use(
+    session({
+        secret : process.env.secret, 
+        resave : false, 
+        saveUninitialized : false, 
+        cookie : {
+            maxAge : 60000
+        }
+    })
+)
+
 // localhost:3000/ 접속시 로그인 페이지 응답
 app.get('/', function(req, res){
-    res.render('index')
+    // 만약에 msg 라는 데이터가 존재한다면
+    if(req.query.msg){
+        res.render('index', {
+            'status' : false
+        })
+    }else{
+        res.render('index', {
+            'status' : true
+        })
+    }
 })
 
 // 회원 관련 api들은 /user 주소에서 모두 사용 

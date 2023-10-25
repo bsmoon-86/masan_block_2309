@@ -20,7 +20,7 @@ module.exports = async function (sql, values = []){
     // sql 쿼리문이 select문이라면 
     if (sql.trim().toLowerCase().startsWith('select')){
         console.log("execute result console : ",  result)
-        return [result]
+        return result
     }else{
         return 'Query Ok'
     }

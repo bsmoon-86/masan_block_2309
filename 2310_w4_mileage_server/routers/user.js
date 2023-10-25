@@ -12,7 +12,27 @@ module.exports = function(){
     
     // 로그인 api 생성(localhost:3000/user [post])
     router.post('/', async function(req, res){
-        // 유저가 보낸 데이터를 변수에 대입 & 확인 
+        // 유저가 보낸 데이터를 변수에 대입 & 확인
+        const id = req.body._id
+        const pass = req.body._pass
+        console.log('url : /user, data : ', id, pass) 
+        // 로그인이 성공하는 조건? -> 유저가 입력한 id, pass와 일치하는 데이터가 존재하는 경우
+        const result = await sql_func(
+            sql_list.login_query, 
+            [id, pass]
+        ) 
+        console.log('url : /user, SQL data : ', result)
+        // 로그인이 성공하는 조건식
+        if(result[0]){
+            // result = [{}]
+            // result[0] : {id : xxxx, password : xxxx, name : xxxx}
+            req.session.logined = result[0]
+            res.redirect('/mileage')
+        }else{
+            // 로그인이 실패하는 경우 로그인 화면으로 돌아간다. 
+            // url에서 ?가 의미하는 바는? -> ?뒤에는 데이터가 존재합니다라는 의미 (key=value)
+            res.redirect('/?msg=fail')
+        }
     })
 
 
@@ -26,7 +46,7 @@ module.exports = function(){
         // 유저가 보낸 아이디 값을 변수에 대입 확인
         const id = req.body._id
         console.log(id)
-        const [result, field] = await sql_func(
+        const result = await sql_func(
             sql_list.info_query, 
             [id]
         )
@@ -51,11 +71,27 @@ module.exports = function(){
         const pass = req.body._pass
         const name = req.body._name
         console.log('url:/signup2, method:post, data :',id, pass, name)
-        const [result, field] = await sql_func(
+        // 데이터베이스에 회원의 정보를 등록하는 부분
+        const result = await sql_func(
             sql_list.signup_query, 
             [id, pass, name]
         )
         console.log('url : /signup2, SQL result :', result)
+        // smartcontract에 유저를 등록하는 부분
+        const sc = require('../reference/smartcontract')
+        const bc_result = await sc.smartcontract
+                            .methods
+                            .add_user(
+                                id
+                            )
+                            .send(
+                                {
+                                    from : process.env.bc_owner, 
+                                    gas : 2000000
+                                }
+                            )
+        console.log('url : /signup2, BC result :', bc_result)
+
         // 로그인 페이지로 이동
         res.redirect('/')
     })

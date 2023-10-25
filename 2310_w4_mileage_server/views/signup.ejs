@@ -4,13 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- sweetalert2 파일(js, css)을 로드  -->
-    <script src="/js/sweetalert2.js"></script>
-    <link rel="stylesheet" href="/css/sweetalert2.css">
-    <!-- jquery 파일 로드 -->
-    <script src="/js/jquery.js"></script>
-    <!-- bootstrap 로드 -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 외부의 html 파일을 포함 시킨다. -->
+    <%- include('head.ejs') %>
     <script>
         // 입력받은 데이터가 문자, 숫자, 특수문자로 이루어져있는가? 
         // 비밀번호의 자리수가 8자리 이상인가?

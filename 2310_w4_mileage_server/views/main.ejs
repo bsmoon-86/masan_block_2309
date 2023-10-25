@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('head.ejs') %>
+    <!-- jQuery를 이용하여 이벤트 리스너 추가 -->
+    <script>
+        $(document).ready(function(){
+            // id가 payment 인 태그의 클릭 이벤트 리스너 생성
+            $('#payment').click(function(){
+                // id가 _user, _amount인 태그의  value를 변수에 대입
+                const user = $('#_user').val()
+                let amount = $('#_amount').val()
+                // 마일리지 데이터를 ,를 제거하고 숫자형태로 변환
+                amount = Number(amount.replaceAll(",", ""))
+                console.log('payment button click - ',user, amount)
+                $.ajax(
+                    {
+                        url : '/mileage/payment', 
+                        method : 'get', 
+                        dataType : 'text', 
+                        data : {
+                            'a' : user, 
+                            'b' : amount
+                        }
+                    }
+                )
+                .done(function(result){
+                    // result : ajax 비동기 통신 후 서버에서 보내는 데이터의 값
+                    console.log('payment ajax result :',result)
+                    // 지급이 완료가 되었다면 alert창 생성
+                    Swal.fire(
+                        '지급 완료', 
+                        // user+'에게 '+amount+' 마일리지를 지급하였습니다', 
+                        `${user}에게 ${amount} 마일리지를 지급하였습니다`,
+                        'success'
+                    )
+                })
+            })
+
+            // 마일리지 입력 값에 3자리 마다 콤마를 추가 
+            $('#_amount', '#_amount2').keyup(function(){
+                // 해당하는 태그의 value를 불러온다. 
+                let value = $(this).val()
+                // value를 숫자형태로 변환
+                value = Number(value.replaceAll(",", ""))
+                if(isNaN(value)){
+                    // isNaN() : 값이 존재하지 않으면 true, 값이 존재한다면 false
+                    // is함수 : 포함되어있으면 true, 포함되어있지 않다면 false 
+                    // NaN : 결측치(데이터가 존재하지 않는다)
+                    $(this).val(0)
+                }else{
+                    // toLocaleString() 함수의 인자값 종류
+                        // ko-KR : 셋째 자리에 콤마 추가 "3,000,000"
+                        // cs-CZ : 셋째 자리에 띄어쓰기 추가 "3 000 000"
+                        // da-DK : 셋째 자리에 온점 추가 "3.000.000"
+                        // de-CH : 셋째 자리에 따옴표 추가 "3'000'000"
+                    const formatValue = value.toLocaleString('ko-KR')
+                    $(this).val(formatValue)
+                }
+            })
+            // id가 transaction인 태그의 클릭 이벤트 리스너 생성
+            $('#transaction').click(function(){
+                const receiver = $('#_receiver').val()
+                let amount = $('#_amount2').val()
+                amount = Number(amount.replaceAll(",", ""))
+                console.log('transaction button click -',receiver,amount)
+                $.ajax(
+                    {
+                        url : '/mileage/transaction', 
+                        method : 'post', 
+                        dataType : 'json', 
+                        data : {
+                            '_receiver' : receiver, 
+                            '_amount' : amount
+                        }
+                    }
+                )
+                .done(function(result){
+                    console.log('transaction ajax result :', result)
+                    // result : 서버에서 응답메시지로 보내준 데이터
+                    // result -> {'mileage' : 100}
+                    // result.mileage -> 100
+                    Swal.fire(
+                        '거래가 완료', 
+                        `마일리지 보내기가 성공하였습니다 남은 마일리지는 ${result.mileage}입니다.`, 
+                        'success'
+                    )
+                    // b 태그를 선택하여 text를 변경
+                    $('b').text(result.mileage)
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+    <!-- 관리자가 로그인을 했다면 마일리지를 지급하는 부분  -->
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">지급 ID</span>
+        <input type="text" id="_user" class="form-control"aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon2">지급 마일리지</span>
+        <input type="text" id="_amount" class="form-control" aria-describedby="basic-addon2">
+    </div>
+    <button id="payment">마일리지 지급</button>
+
+    <!-- 일반 유저가 로그인을 했다면 자기 자신의 마일리지를 표시
+        다른 유저에게 마일리지를 보낼수 있는 부분 
+    -->
+    <p><%=id%>님이 보유한 마일리지는 <b><%=mileage%></b>입니다.</p>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon3">받는 ID</span>
+        <input type="text" id="_receiver" class="form-control"aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon4">보낼 마일리지</span>
+        <input type="text" id="_amount2" class="form-control"aria-describedby="basic-addon4">
+    </div>
+    <button id="transaction">마일리지 보내기</button>
+</body>
+</html>
