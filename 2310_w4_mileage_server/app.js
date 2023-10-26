@@ -4,6 +4,9 @@ const app = express()
 // port 설정
 const port = 3000
 
+// fs 라이브러리 로드 
+const fs = require('fs')
+
 // view 파일들의 기본 경로 지정
 app.set('views', __dirname+"/views")
 // viwe engine 지정
@@ -34,6 +37,9 @@ app.use(
     })
 )
 
+// reference에 create_table.js를 로드 해서 함수를 호출
+require('./reference/create_table')()
+
 // localhost:3000/ 접속시 로그인 페이지 응답
 app.get('/', function(req, res){
     // 만약에 msg 라는 데이터가 존재한다면
@@ -45,6 +51,46 @@ app.get('/', function(req, res){
         res.render('index', {
             'status' : true
         })
+    }
+})
+
+// 데이터베이스의 정보를 입력하는 api
+app.get('/db_info', function(req, res){
+    res.render('db_info')
+})
+
+// 데이터베이스 정보를 유저에게서 받아온 뒤 파일로 저장
+app.post("/insert_db_info", function(req, res){
+    console.log(req.body)
+    // 유저가 보낸 데이터베이스의 정보를 json 파일로 저장
+    // json 형태의 데이터를 문자열로 변경
+    const data = JSON.stringify(req.body)
+    // json파일로 저장
+    fs.writeFileSync('./reference/db_info.json', data)
+    res.send('json 파일 저장 완료')
+    // res.send(req.body)
+})
+
+// 데이터베이스에서 user 테이블 정보를 불러온다.
+app.get('/db_load', async function(req, res){
+    // 클래스를 생성할때 
+    // db_info.json이 존재한다면 class를 생성
+    const result = fs.existsSync("./reference/db_info.json")
+    if(result){
+        const db_info = require("./reference/db_info.json")
+        console.log(db_info._host)
+        const sql_class = require('./reference/sql_class')
+        const class1 = new sql_class.Mysql(
+            db_info._host, 
+            db_info._port, 
+            db_info._user,
+            db_info._pass, 
+            db_info._db
+        )
+        console.log(class1)
+        res.send("")
+    }else{
+        res.redirect('/db_info')
     }
 })
 

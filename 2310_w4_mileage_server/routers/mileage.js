@@ -2,9 +2,16 @@ const express = require('express')
 
 const router = express.Router()
 
+const sql_list = require("../reference/sql_list")
+const sql_class = require("../reference/sql_class")
 
-// smartcontract 모듈을 로드 
-const sc =require("../reference/smartcontract")
+const class1 = new sql_class.Mysql(
+    process.env.host, 
+    process.env.port, 
+    process.env.user, 
+    process.env.db_pass, 
+    process.env.db_name
+)
 
 module.exports = function(){
 
@@ -16,18 +23,19 @@ module.exports = function(){
             // console.log('url : /mileage, session data :', req.session)
             // console.log('url : /mileage, session data :', req.session.logined)
             // console.log('url : /mileage, session data :', req.session.logined.id)
-            // smartcontract에 있는 view_mileage()함수를 호출하여 보유한 마일리지의 수를 받아온다.
-            const result = await sc.smartcontract
-                            .methods
-                            .view_mileage(
-                                req.session.logined.id
-                            )
-                            .call()
-            console.log('url : /mileage, BC_result : ', result)
+
+            // sql에서 로그인을 한 아이디의 마일리지 값 출력
+            const result = await class1.execute(
+                sql_list.view_mileage, 
+                [req.session.logined.id]
+            )
+            console.log('url : /mileage, SQL result :', result)
+            // result의 데이터 형태? -> [{id: xxx, mileage:xxxx}]
+            // result 에서 mileage data만 추출하려면? -> 
 
             res.render('main', {
                 'id' : req.session.logined.id, 
-                'mileage' : result
+                'mileage' : result[0].mileage
             })
         }
     })
@@ -38,20 +46,13 @@ module.exports = function(){
         const user = req.query.a
         const amount = req.query.b
         console.log("url : /mileage/payment, data :", user, amount)
-        // 스마트컨트렉트에 add_mileage()함수를 호출
-        const result = await sc.smartcontract
-        .methods
-        .add_mileage(
-            user, 
-            amount
+
+        const result = await class1.execute(
+            sql_list.mileage_add, 
+            [amount, user]
         )
-        .send(
-            {
-                from : process.env.bc_owner, 
-                gas : 2000000
-            }
-        )
-        console.log("url : /mileage/payment, contract_data :", result)
+        console.log("url : /payment, SQL result :", result )
+
         res.send("마일리지 지급 완료")
     })
 
@@ -60,35 +61,30 @@ module.exports = function(){
         const receiver = req.body._receiver
         const amount = req.body._amount
         console.log('url : /mileage/transaction, data : ',receiver, amount)
-        // smartcontract에 trans_mileage() 함수를 호출하여 마일리지 거래 
-        // trans_mileage에는 매개변수 3개 : sender, receiver, amount
-        // sender에 들어갈 데이터는? req.session.logined.id
         const sender = req.session.logined.id
-        const result = await sc.smartcontract
-                        .methods
-                        .trans_mileage(
-                            sender, 
-                            receiver, 
-                            amount
-                        )
-                        .send(
-                            {
-                                from : process.env.bc_owner, 
-                                gas : 2000000
-                            }
-                        )
-        console.log('url : /mileage/transaction, bc_result :', result)
-        // 거래 완료 후 로그인을 한 아이디의 마일리지의 양을 다시 받아온다. 
-        const result2 = await sc.smartcontract
-                        .methods
-                        .view_mileage(
-                            sender
-                        )
-                        .call()
-        console.log('url : /mileage/transaction, bc_result2 :', result2)
+        // sender 의 마일리지를 감소 시킨다
+        const result = await class1.execute(
+            sql_list.mileage_subtract, 
+            [amount, sender]
+        )
+        console.log('url : /transaction, SQL result :', result)
+        // receiver의 마일리지를 증가 시킨다
+        const result2 = await class1.execute(
+            sql_list.mileage_add, 
+            [amount, receiver]
+        )
+        console.log('url : /transaction, SQL result2 :', result2)
+
+        const result3 = await class1.execute(
+            sql_list.view_mileage, 
+            [sender]
+        )
+        console.log('url : /transaction, SQL result3 :', result3)
+
+
         // 응답 메시지 -> json -> ajax에서 dataType를 json 지정했기 때문에
         res.json({
-            'mileage' : result2
+            'mileage' : result3[0].mileage
         })
     })
 

@@ -4,14 +4,7 @@ const router = express.Router()
 
 // 외부의 js 파일을 로드 
 const sql_list = require('../reference/sql_list')
-const sql_class = require("../reference/sql_class")
-const class1 = new sql_class.Mysql(
-    process.env.host, 
-    process.env.port, 
-    process.env.user, 
-    process.env.db_pass, 
-    process.env.db_name
-)
+const sql_func = require("../reference/sql_function")
 
 module.exports = function(){
 
@@ -24,7 +17,7 @@ module.exports = function(){
         const pass = req.body._pass
         console.log('url : /user, data : ', id, pass) 
         // 로그인이 성공하는 조건? -> 유저가 입력한 id, pass와 일치하는 데이터가 존재하는 경우
-        const result = await class1.execute(
+        const result = await sql_func(
             sql_list.login_query, 
             [id, pass]
         ) 
@@ -53,7 +46,7 @@ module.exports = function(){
         // 유저가 보낸 아이디 값을 변수에 대입 확인
         const id = req.body._id
         console.log(id)
-        const result = await class1.execute(
+        const result = await sql_func(
             sql_list.info_query, 
             [id]
         )
@@ -79,17 +72,25 @@ module.exports = function(){
         const name = req.body._name
         console.log('url:/signup2, method:post, data :',id, pass, name)
         // 데이터베이스에 회원의 정보를 등록하는 부분
-        const result = await class1.execute(
+        const result = await sql_func(
             sql_list.signup_query, 
             [id, pass, name]
         )
         console.log('url : /signup2, SQL result :', result)
-        // 데이터베이스 마일리지 테이블에 데이터를 추가
-        const result2 = await class1.execute(
-            sql_list.mileage_add_user, 
-            [id, 0]
-        )
-        console.log('url : /signup2, SQL result2 :', result2)
+        // smartcontract에 유저를 등록하는 부분
+        const sc = require('../reference/smartcontract')
+        const bc_result = await sc.smartcontract
+                            .methods
+                            .add_user(
+                                id
+                            )
+                            .send(
+                                {
+                                    from : process.env.bc_owner, 
+                                    gas : 2000000
+                                }
+                            )
+        console.log('url : /signup2, BC result :', bc_result)
 
         // 로그인 페이지로 이동
         res.redirect('/')

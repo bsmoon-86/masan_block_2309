@@ -108,6 +108,40 @@ const update_content_query=`
     WHERE 
     No = ?
 `
+const mileage_add_user = `
+    INSERT INTO 
+    mileage 
+    VALUES (?, ?)
+`
+// 마일리지 지급 sql 
+const mileage_add = `
+    UPDATE 
+    mileage 
+    SET 
+    mileage = mileage + ? 
+    WHERE 
+    id = ?
+`
+
+// 마일리지 감소
+const mileage_subtract = `
+    UPDATE 
+    mileage 
+    SET 
+    mileage = mileage - ?
+    WHERE 
+    id = ?
+`
+
+// 마일리지 조회
+const view_mileage = `
+    SELECT 
+    * 
+    FROM 
+    mileage
+    WHERE 
+    id = ?
+`
 
 module.exports = {
     login_query, 
@@ -121,5 +155,9 @@ module.exports = {
     board_query, 
     view_content_query, 
     del_content_query, 
-    update_content_query
+    update_content_query, 
+    mileage_add_user, 
+    mileage_add, 
+    mileage_subtract, 
+    view_mileage
 }
