@@ -13,7 +13,11 @@ class Mysql{
             password : _pass, 
             database : _db
         })
-        // promice() : 비동기 처리방식
+        // promise() : 비동기 처리방식
+        // async , await -> 방식을 좀 더 잘 동작하기위한 promise API를 사용하는 설정
+        // ES7 동작 방식
+        // createConnection : ES6 방식
+        // ES : JS의 표준 규격
         this.connection = this.pool.promise()
     }
 
