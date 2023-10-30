@@ -34,7 +34,12 @@ module.exports = function(){
             // result = [{}]
             // result[0] : {id : xxxx, password : xxxx, name : xxxx}
             req.session.logined = result[0]
-            res.redirect('/mileage')
+            // 일반 유저인 경우에는 /mileage 주소로 이동
+            if (result[0].code == 1){
+                res.redirect('/mileage')
+            }else{
+                res.redirect('/manager')
+            }
         }else{
             // 로그인이 실패하는 경우 로그인 화면으로 돌아간다. 
             // url에서 ?가 의미하는 바는? -> ?뒤에는 데이터가 존재합니다라는 의미 (key=value)

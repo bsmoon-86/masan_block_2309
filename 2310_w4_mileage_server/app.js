@@ -54,6 +54,21 @@ app.get('/', function(req, res){
     }
 })
 
+// 관리자가 로그인을 한 경우
+app.get('/manager', function(req, res){
+    // 로그인 데이터가 존재해야된다
+    // 로그인 데이터에서 code가 0이여야 한다. 
+    // 두 조건식이 모두 참인 경우에만 manager페이지를 보여준다. 
+    if(req.session.logined.code == 0){
+        res.render('manager', {
+            'id' : req.session.logined.id, 
+            'code' : req.session.logined.code 
+        })
+    }else{
+        res.redirect('/mileage')
+    }
+})
+
 // 데이터베이스의 정보를 입력하는 api
 app.get('/db_info', function(req, res){
     res.render('db_info')

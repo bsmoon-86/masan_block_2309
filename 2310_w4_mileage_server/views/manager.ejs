@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('head.ejs') %>
+    <script>
+        // 관리자가 아닌 다른 사람이 해당하는 페이지를 로드하였을때
+        function popup(code){
+            // code가 1이라면 일반 유저 -> /mileage주소로 이동
+            if(code == 1){
+                // Swal.fire({
+                //     title : '관리자 계정이 아닙니다.', 
+                //     text : '페이지를 이동합니다.', 
+                //     icon : 'error', 
+                //     html : '<a href="/mileage">확인</a>'
+                // })
+                alert('관리자 계정이 아닙니다.')
+                location.href='/mileage'
+            }
+        }
+    </script>
+        
+</head>
+<body onload="popup('<%=code%>')">
+    <div class="container">
+        <h1>
+            관리자 page
+        </h1>
+        <!-- 관리자가 로그인을 했다면 마일리지를 지급하는 부분  -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">지급 ID</span>
+            <input type="text" id="_user" class="form-control"aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon2">지급 마일리지</span>
+            <input type="text" id="_amount" class="form-control" aria-describedby="basic-addon2">
+        </div>
+        <button id="payment">마일리지 지급</button>
+    </div>
+    <script>
+        // id가 payment인 버튼을 클릭했을때 이벤트 리스너 생성
+        $('#payment').click(function(){
+            // id 가 _user, _amount인 input 태그의 value값을 변수에 대입 
+            const user = $('#_user').val()
+            const amount = $('#_amount').val()
+            console.log(user, amount)
+            // 비동기 통신을 이용하여 마일리지를 지급한다. 
+            $.ajax(
+                {
+                    url : '/mileage/payment', 
+                    method : 'get', 
+                    dataType : 'text', 
+                    data : {
+                        'a' : user, 
+                        'b' : amount
+                    }
+                }
+            ).done(function(result){
+                console.log('payment ajax result :', result)
+                Swal.fire(
+                    '지급 완료', 
+                    `${user}에게 ${amount} 마일리지를 지급하였습니다.`, 
+                    'success'
+                )
+            })
+        })
+    </script>
+</body>
+</html>
