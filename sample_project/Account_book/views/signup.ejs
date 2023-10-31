@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('refer/head.ejs') %>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign up</h1>
+        <!-- id를 입력하는 부분 -->
+        <form action="/user/signup2" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">ID</span>
+                <input type="text" name="_id" class="form-control" id="input_id" aria-describedby="basic-addon1">
+                <button id="check_id" class="btn btn-primary">아이디 체크</button>
+            </div>
+            <div id="check_alert_id" class="alert alert-primary" role="alert">
+            </div>
+            <div id="user_info">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon2">PASSWORD</span>
+                    <input type="password" name="_pass" id="input_pass" class="form-control" aria-describedby="basic-addon2">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">CONFIRM</span>
+                    <input type="password" id="confirm_pass" class="form-control" aria-describedby="basic-addon3">
+                </div>
+                <div id="check_alert_pass" class="alert alert-primary" role="alert">
+                </div>
+                <!-- 이름을 입력하는 부분 -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon4">NAME</span>
+                    <input type="text" name="_name" class="form-control" aria-describedby="basic-addon4" required>
+                </div>
+                <!-- 소속을 입력하는 부분 -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon5">Company</span>
+                    <input type="text" name="_company" class="form-control" aria-describedby="basic-addon5" required>
+                </div>
+                <input type="submit" id="form_submit" class="btn btn-primary" disabled>
+            </div>
+        </form>    
+    </div>
+</body>
+</html>

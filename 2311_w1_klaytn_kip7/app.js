@@ -44,6 +44,26 @@ app.post("/create", async function(req, res){
     res.send(result)
 })
 
+// 지갑을 생성하는 api
+app.get('/create_wallet', async function(req, res){
+    result = kip7.create_wallet()
+    res.send(result)
+})
+
+// 토큰을 지급하는 화면 api 
+app.get("/transfer", function(req, res){
+    res.render('transfer')
+})
+
+app.post('/transfer2', async function(req, res){
+    const receiver = req.body._receiver
+    const amount = req.body._amount
+    console.log(receiver, amount)
+    const result = await kip7.transfer(receiver, Number(amount))
+    console.log(result)
+    res.send(result)
+})
+
 
 app.listen(port, function(){
     console.log(`port : ${port} Server start`)

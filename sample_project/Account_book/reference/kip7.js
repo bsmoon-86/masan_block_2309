@@ -12,7 +12,7 @@ require('dotenv').config()
 // KAS에 접속하기 위한 ID, PASSWORD 파일을 로드 
 // AccessKey, Secret AccessKey 정보를 가진 파일의 경로?
 // 상위 폴더로 이동(../) -> kas 하위 폴더로 이동(kas/) -> kas.json
-const kas_info = require('../kas/kas.json')
+const kas_info = require('./kas.json')
 const accesskeyID = kas_info.accessKeyId
 const secretAccessKey = kas_info.secretAccessKey
 // baobab testnet chainID 지정
@@ -36,7 +36,7 @@ const keyring = keyringContainer.keyring.createFromPrivateKey(
 keyringContainer.add(keyring)
 
 // 토큰을 발행하는 함수 생성
-async function create_token(_name, _symbol, _decimal, _amount){
+async function create_token(_name, _symbol, _decimal, _amount, _path){
     console.log(_name, _symbol, _decimal, _amount)
     // KAS에서 제공하는 함수형태로 ERC20 token을 생성하는 방법
     // kip7 토큰 : 이더리움 환경에서 ERC20 토큰과 같은 성질을 가지고 있다. 
@@ -61,7 +61,7 @@ async function create_token(_name, _symbol, _decimal, _amount){
     // json데이터를 문자형으로 변환 
     const data = JSON.stringify(kip7_address)
     // 파일로 저장
-    fs.writeFileSync("./kas/kip7.json", data)
+    fs.writeFileSync(_path, data)
     return '토큰 발행 완료'
 }
 
@@ -81,7 +81,7 @@ async function transfer(_receiver, _amount){
     // _amount : 보내는 토큰의 양
     
     // 어떠한 kip7 토큰을 사용할것인가
-    const kip7_info = require('../kas/kip7.json')
+    const kip7_info = require('./kip7.json')
     const kip7 = await new caver.kct.kip7(kip7_info.address) 
     kip7.setWallet(keyringContainer)
     
