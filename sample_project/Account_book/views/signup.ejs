@@ -5,6 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <%- include('refer/head.ejs') %>
+    <script>
+        // 패스워드가 8자리 이상이고 숫자, 영문자, 특수문자로 이루어질수 있도록 함수 생성
+        function checkPassword(str){
+            const pattern1 = /[0-9]/        //  /(패턴구분자 시작)정규 표현식/(패턴구분자 끝)
+            const pattern2 = /[a-zA-Z]/
+            const pattern3 = /[~!@#$%^&*()?{}<>]/
+            // 4가지 조건이 모두 만족 시 사용 가능 패스워드
+            // test(n) : pattern의 값들이 포함되어있는가?
+            if(pattern1.test(str) && pattern2.test(str) && pattern3.test(str) && str.length >= 8){
+                // 사용 가능한 패스워드
+                return true
+            }else{
+                // 사용 불가능한 패스워드
+                return false
+            }
+        }
+    </script>
+    <script>
+        // $(document).ready() : html 페이지가 로드되었을 때
+        $(document).ready(function(){
+            // 아이디를 체크하는 영역을 제외한 부분은 모두 숨긴다. 
+            $('#check_alert_id').hide()
+            $('#check_alert_pass').hide()
+            $('#user_info').hide()
+
+            // check_id인 태그를 클릭 했을때
+            $('#check_id').click(function(){
+                const input_id = $('#input_id').val()
+                // Ajax를 이용하여 서버와 비동기 통신
+                $.ajax(
+                    {
+                        url : '/user/check_id', 
+                        method : 'get', 
+                        dataType : 'text', 
+                        data : {
+                            '_id' : input_id
+                        }
+                    }
+                ).then(function(result){
+                    // result는 서버에서 비동기 통신 이후 되돌려주는 데이터 값
+                    // result가 true라면 사용 가능한 아이디
+                    console.log(result)
+                    if(result == 'true'){
+                        $('#check_alert_id').text('사용 가능한 아이디').show()
+                        $('#user_info').show()
+                        $('#input_id').attr('readonly', true)
+                        $('#check_id').hide()
+                    }
+                    // result가 abled가 아니라면 사용 불가능한 아이디
+                    else{
+                        $('#check_alert_id').text('사용 불가능한 아이디').show()
+                    }
+                })
+            })
+
+            // password의 문자, 숫자, 특수문자 조합 체크 부분
+            $('#input_pass').keyup(function(){
+                const pass = $(this).val()
+                if(checkPassword(pass)){
+                    // 사용 가능한 패스워드
+                    $('#check_alert_pass').text('사용 가능한 패스워드입니다.').show()
+                }else{
+                    $('#check_alert_pass').text('비밀번호의 길이는 8자리 이상이고 문자, 숫자, 특수문자의 조합이여야 합니다.').show()
+                }
+            })
+
+            // password check 부분 
+            // id가 confirm_pass인 태그를 선택하여 키가 입력되었을때 
+            $('#confirm_pass').keyup(function(){
+                // id가 input_pass인 태그의 value 로드 
+                const input_pass = $('#input_pass').val()
+                const confirm_pass = $(this).val()
+                // checkPassword(input_pass)함수의 호출하여 리턴 값이 true
+                if(checkPassword(input_pass)){
+                    // 두 데이터가 같은 경우, input_pass 값이 존재하는 경우 
+                    if(input_pass == confirm_pass){
+                        // id가 check_alert_pass인 태그를 보여준다 
+                        // 비밀번호가 일치 문자 추가 
+                        $('#check_alert_pass').text('비밀번호 일치').show()
+                        $('#check_alert_pass').addClass('alert-primary')
+                        $('#check_alert_pass').removeClass('alert-danger')
+                        // id가 form_submit인 태그를 선택하여 활성화
+                        $('#form_submit').attr('disabled', false)
+                    }else{
+                        $('#check_alert_pass').text('비밀번호 불일치').show()
+                        $('#check_alert_pass').removeClass('alert-primary')
+                        $('#check_alert_pass').addClass('alert-danger')
+                        // id가 form_submit인 태그를 선택하여 비활성화
+                        $('#form_submit').attr('disabled', true)
+                    }
+                }
+            })
+        })
+    </script>
 </head>
 <body>
     <div class="container">

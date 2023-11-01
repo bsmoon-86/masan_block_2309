@@ -68,12 +68,22 @@ async function create_token(_name, _symbol, _decimal, _amount, _path){
 // 토큰을 사용할 지갑들을 생성하는 함수 
 async function create_wallet(){
     // KAS에서 제공하는 wallet
-    const account = await caver.kas.wallet.createAccount()
+    // const account = await caver.kas.wallet.createAccount()
     // klaytn에서 제공하는 wallet
     const keyring2 = await caver.wallet.keyring.generate()
-    console.log('KAS에서 제공하는 walllet 생성', account)
+    // console.log('KAS에서 제공하는 walllet 생성', account)
     console.log('Klaytn에서 제공하는 wallet 생성', keyring2)
-    return "지갑 발급 완료"
+    /* 
+        keyring2 -> {
+            _address : 지갑주소, 
+            _key : {
+                _privateKey : privatekey
+            }
+        }
+    */
+   const wallet_address = keyring2._address
+   const private_key = keyring2._key._privateKey
+    return [wallet_address, private_key]
 }   
 
 async function transfer(_receiver, _amount){
@@ -96,8 +106,22 @@ async function transfer(_receiver, _amount){
     return "토큰 거래 완료"
 }
 
+// 토큰의 양을 확인하는 함수 
+async function balance(_address){
+    // 토큰의 정보를 로드 
+    const token_info = require('./kip7.json')
+    const token = token_info.address
+    const kip7 = await new caver.kct.kip7(token)
+    kip7.setWallet(keyringContainer)
+    // 잔여량을 체크하는 함수 호출 (데이터 변화 x)
+    const amount = await kip7.balanceOf(_address)
+    console.log('BalanceOf result :', amount)
+    return amount
+}
+
 module.exports = {
     create_token, 
     create_wallet, 
-    transfer
+    transfer, 
+    balance
 }

@@ -1,0 +1,5 @@
+{
+    "check_id" : "select * from account_user where id = ?", 
+    "signup" : "insert into account_user values (?, ?, ?, ?, ?, ?)", 
+    "signin" : "select * from account_user where id = ? and password = ?"
+}

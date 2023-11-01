@@ -11,6 +11,21 @@ app.use(express.static('public'))
 
 require('dotenv').config()
 
+// session 설정
+const session = require('express-session')
+
+app.use(
+    session({
+        secret : process.env.session_key, 
+        resave : false, 
+        saveUninitialized : false, 
+        cookie : {
+            maxAge : 300000
+        }
+    })
+)
+
+
 const fs = require('fs')
 const kip7_func = require('./reference/kip7')
 // KAS를 이용하여 token을 생성(기존의 토큰이 존재하는 않는 경우에만)
@@ -26,9 +41,22 @@ if(!fs.existsSync(path2)){
     )
 }
 
+// localhost:3000/ 요청시 
+app.get('/', function(req, res){
+    if(!req.session.logined){
+        res.redirect('/user')
+    }else{
+        res.redirect('/book')
+    }
+})
+
 // 회원 관련 api들은 user.js에서 실행하도록 route 설정
 const user = require('./routes/user')()
 app.use('/user', user)
+
+// 장부 관련 api들을 book.js에서 실행하도록 route 설정
+const book = require('./routes/book')()
+app.use('/book', book)
 
 
 

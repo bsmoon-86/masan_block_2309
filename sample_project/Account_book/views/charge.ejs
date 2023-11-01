@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+</head>
+<body>
+    <div class="container">
+        <form action="/user/charge2" method="get">
+            <label>Amount</label>
+            <input type="number" name="_amount"><br>
+            <input type="submit" value="충전">
+        </form>
+    </div>
+</body>
+</html>
