@@ -87,7 +87,7 @@ async function create_wallet(){
 }   
 
 async function transfer(_receiver, _amount){
-    // _receiver : 토큰은 받는 지갑의 private_key
+    // _receiver : 토큰은 받는 지갑의 wallet_addess
     // _amount : 보내는 토큰의 양
     
     // 어떠한 kip7 토큰을 사용할것인가
@@ -104,6 +104,65 @@ async function transfer(_receiver, _amount){
     )
     console.log('Trasfer result :', receipt)
     return "토큰 거래 완료"
+}
+// 유저가 관리자에게 토큰을 전송하는 함수
+async function payment(_sender, _amount = 1){
+    // _sender는 유저의 private_key
+    // 해당하는 keyring을 keyringContainer 추가
+    // 어떠한 kip7 토큰을 사용할것인가
+    const kip7_info = require('./kip7.json')
+    const kip7 = await new caver.kct.kip7(kip7_info.address) 
+    kip7.setWallet(keyringContainer)
+    // 유저의 private_key를 이용하여 keyring의 형태로 변경
+    const keyring2 =keyringContainer.keyring.createFromPrivateKey(
+        _sender
+    )
+    console.log('keyring data form :', keyring2)
+    keyringContainer.add(keyring2)
+    const receipt = await kip7.transfer(
+        keyring.address, // 관리자의 지갑 주소
+        _amount, 
+        {
+            from : keyring2.address
+        }
+    )
+    console.log('payment result :', receipt)
+    return '토큰 지불 완료'
+}
+// 유저가 관리자에게 토큰 사용 권한을 주고 관리자가 transfer를 호출
+async function transferfrom(_sender, _amount){
+    const kip7_info = require('./kip7.json')
+    const kip7 = await new caver.kct.kip7(kip7_info.address) 
+    kip7.setWallet(keyringContainer)
+    const sender = keyringContainer.keyring.createFromPrivateKey(
+        _sender
+    )
+    console.log(sender)
+    keyringContainer.add(sender)
+    
+    
+    //  approve()함수를 이용하여 토큰에 대한 사용 권한이 지급
+    // approve(권한을 받는 지갑의 주소, 토큰의 양, {from : 유저의 지갑})
+    const approve_result = await kip7.approve(
+        keyring.address, 
+        1, 
+        {
+            from : sender.address
+        }
+    ) 
+        console.log(approve_result)
+    const result  = await kip7.transferFrom(
+        // 보내는 사람의 지갑 주소
+        sender.address, 
+        // 받는 사람의 지갑 주소
+        keyring.address, 
+        1,
+        {
+            from : keyring.address
+        }
+    )
+    console.log(result)
+    return '거래 완료'
 }
 
 // 토큰의 양을 확인하는 함수 
@@ -123,5 +182,7 @@ module.exports = {
     create_token, 
     create_wallet, 
     transfer, 
-    balance
+    balance, 
+    payment, 
+    transferfrom
 }

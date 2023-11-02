@@ -160,6 +160,7 @@ module.exports = function(){
         }
     })
 
+    // 관리자가 유저에게 토큰을 전송하는 부분
     router.get('/charge2', async function(req, res){
         if(!req.session.logined){
             res.redirect('/')
@@ -176,6 +177,12 @@ module.exports = function(){
         }
 
     })
+
+    // 유저가 관리자에게 토큰을 전송하는 부분(2가지 방법) -> 장부를 등록했을 때
+    // transfer(받은 사람의 지갑 주소, 보내는 양 { from  : 보내는 사람의 지갑 주소}) -> 보내는 사람이 수수료 발생
+    // transferfrom() -> 보내는 사람과 받은 사람이 아니라 임의의 지갑에서 수수료를 발생 -> error 발생
+    // transferfrom()을 사용하기 위해서는 aprrove() 함수를 이용하여 승인을 받고 트랜젠셜을 발생
+
 
     return router
 }
