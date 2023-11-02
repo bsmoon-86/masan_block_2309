@@ -8,6 +8,61 @@ const category = `
     type = ?
 `
 
+// 매출 장부 데이터 삽입 sql
+const insert_sales = `
+    insert into 
+    account_sales(
+        company, 
+        code, 
+        unit_name, 
+        unit_sold, 
+        amount, 
+        units_cost, 
+        vat, 
+        writer, 
+        year, 
+        month, 
+        day, 
+        create_dt, 
+        etc
+    )
+    values (?,?,?,?,?,?,?,?,?,?,?,?,?)
+`
+
+// 매입 장부 데이터 삽입 sql
+const insert_purchase = `
+    insert into 
+    account_purchase(
+        company, 
+        code, 
+        unit_name, 
+        unit_sold, 
+        amount, 
+        units_cost, 
+        vat, 
+        writer, 
+        year, 
+        month, 
+        day, 
+        create_dt, 
+        etc
+    )
+    values (?,?,?,?,?,?,?,?,?,?,?,?,?)
+`
+
+// 부가세 확인하는 sql 
+const check_vat = `
+        select 
+        vat 
+        from 
+        account_category 
+        where 
+        code = ?
+`
+
 module.exports={
-    category
+    category, 
+    insert_purchase, 
+    insert_sales, 
+    check_vat
 }
