@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include ('./refer/head.ejs')%>
+    <script>
+        function search(){
+            // id가 year, month 인 태그를 선택하여 value를 추출
+            const year = $('#year').val()
+            const month = $('#month').val()
+            // 비동기 통신을 이용하여 데이터를 로드 
+            $.ajax({
+                url : '/book/select_month', 
+                method : 'get', 
+                dataType : 'json', 
+                data : {
+                    '_year' : year, 
+                    '_month' : month
+                } 
+            })
+            .done(function(result){
+                
+            })
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="input_year">년도</span>
+            <select class="form-select" id="year" aria-describedby="input_year">
+                <!-- 반복문을 이용하여 option 생성 -->
+                <% for(let i = 2020; i < 2024; i++){ %>
+                    <option value="<%=i%>"><%=i%></option>
+                <%}%>
+            </select>    
+            <span class="input-group-text" id="input_month">월</span>
+            <select class="form-select" id="month" aria-describedby="input_month">
+                <% for(let i = 1; i < 13; i++){ %>
+                    <option value="<%=i%>"><%=i%></option>
+                <% } %>
+            </select> 
+            <button class="btn btn-primary" onclick="search()"> 조회</button>
+        </div>
+    </div>
+
+</body>
+</html>
