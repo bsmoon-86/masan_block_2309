@@ -25,6 +25,11 @@ app.use(
     })
 )
 
+// 최초의 sql에 table이 존재하는가?
+// 외부의 js 파일에서 table를 생성하는 함수를 호출
+const create_table = require('./reference/create_table')
+create_table.execute_sql()
+
 
 const fs = require('fs')
 const kip7_func = require('./reference/kip7')
