@@ -30,6 +30,25 @@
                     for(let i = 0; i < result.length; i++){
                         $('#select2').append(`<option value=${result[i].code}>${result[i].name}</option>`)
                     }
+                    // id가 bisiness_search인 태그를 선택하여 option값들을 모두 제거하고 새로운 option을 추가
+                    $('#bisiness_search option').remove()
+                    if(type == '매입'){
+                        <%
+                            for(let j = 0; j < purchase.length; j++){
+                        %>
+                                $('#bisiness_search').append(`<option value="<%=purchase[j]['bisiness']%>" />`)
+                        <%
+                                }
+                        %>
+                    }else{
+                        <%
+                            for(let j = 0; j < sales.length; j++){
+                        %>
+                                $('#bisiness_search').append(`<option value="<%=sales[j]['bisiness']%>" />`)
+                        <%
+                                }
+                        %>
+                    }
                 })
             })
 
@@ -54,7 +73,11 @@
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="input_bisiness">거래처</span>
-                <input type="text" name="_bisiness" class="form-control" aria-describedby="input_bisiness">
+                <input type="text" name="_bisiness" class="form-control" aria-describedby="input_bisiness" list="bisiness_search">
+                <!-- 자동완성의 리스트를 생성 -->
+                <datalist id="bisiness_search">
+                    <!-- 매입이냐 매출이냐 지정을 하고 난 뒤 option를 추가 -->
+                </datalist>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="input_name">거래 품목</span>

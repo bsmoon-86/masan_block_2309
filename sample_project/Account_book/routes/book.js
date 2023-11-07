@@ -29,11 +29,27 @@ module.exports = function(){
     })
 
     // 장부를 입력하는 api
-    router.get('/add', function(req, res){
+    router.get('/add', async function(req, res){
         if(!req.session.logined){
             res.redirect('/')
         }else{
-            res.render('book_add.ejs')
+            // 거래처 자동 완성을 위한 데이터베이스에서 데이터를 로드 
+            // sql에서 해당하는 company에서 등록한 장부의 거래처의 중복데이터를 제거한 정보를 로드
+            // sql에서 DISTINCT를 사용하면 중복 데이터를 제거하고 로드 
+            const company = req.session.logined.company
+            const purchase = await mydb.execute(
+                query.auto_bisiness, 
+                [company]
+            ) 
+            const sales = await mydb.execute(
+                query.auto_bisiness2, 
+                [company]
+            )
+            console.log(purchase, sales)
+            res.render('book_add.ejs', {
+                'purchase' : purchase, 
+                'sales' : sales
+            })
         }
     })
 
@@ -194,9 +210,24 @@ module.exports = function(){
         // 유저가 보낸 데이터를 변수에 대입 
         const year = req.query._year
         const month = req.query._month
+        const select = req.query._select
         // sql에서 데이터를 로드 
         // 1. account_purchase에서 년도와 월이 같은 데이터를 출력
         // 2. 코드와 월별로 그룹화를 하여 그룹 연산
+        let result
+        if(select == '매입'){
+            result = await mydb.execute(
+                query.purchase_month, 
+                [year, month]
+            )
+        }else{
+            result = await mydb.execute(
+                query.sales_month, 
+                [year, month]
+            )
+        }
+        console.log('/select_month - DB result :', result)
+        res.json(result)
         
 
     })

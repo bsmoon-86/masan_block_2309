@@ -83,10 +83,10 @@ const sales_list = `
 // purchase table를 그룹화 연산 query
 const purchase_month = `
         select 
-        year, 
-        month, 
+        bisiness, 
         code, 
-        SUM(units_cost)
+        SUM(vat) as vat,
+        SUM(units_cost) as cost
         from 
         account_purchase
         where 
@@ -94,7 +94,44 @@ const purchase_month = `
         and
         month = ?
         group by 
-        code
+        blockchain.account_purchase.bisiness,
+        blockchain.account_purchase.code
+`
+const sales_month = `
+        select 
+        bisiness, 
+        code, 
+        SUM(vat) as vat,
+        SUM(units_cost) as cost
+        from 
+        account_sales
+        where 
+        year = ? 
+        and
+        month = ?
+        group by 
+        blockchain.account_sales.bisiness,
+        blockchain.account_sales.code
+`
+
+// 자동 완성을 위한 query
+const auto_bisiness = `
+        select 
+        distinct 
+        bisiness 
+        from 
+        account_purchase
+        where 
+        company = ?
+`
+
+const auto_bisiness2 = `
+        select 
+        distinct 
+        bisiness 
+        from account_sales 
+        where 
+        company = ?
 `
 
 module.exports={
@@ -103,5 +140,9 @@ module.exports={
     insert_sales, 
     check_vat, 
     purchase_list, 
-    sales_list
+    sales_list, 
+    purchase_month, 
+    sales_month,
+    auto_bisiness, 
+    auto_bisiness2
 }
