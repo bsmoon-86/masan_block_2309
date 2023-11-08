@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <%- include ('./refer/head.ejs')%>
+    <script src="/js/xlsx.full.min.js"></script>
+    <script src="/js/FileSaver.js"></script>
     <script>
         function search(){
             // id가 year, month 인 태그를 선택하여 value를 추출
-            const year = $('#year').val()
-            const month = $('#month').val()
+            const start_year = $('#start_year').val()
+            const start_month = $('#start_month').val()
+            const end_year = $('#end_year').val()
+            const end_month = $('#end_month').val()
             const select = $('#select').val()
             // 비동기 통신을 이용하여 데이터를 로드 
             $.ajax({
@@ -17,52 +21,190 @@
                 method : 'get', 
                 dataType : 'json', 
                 data : {
-                    '_year' : year, 
-                    '_month' : month, 
+                    '_start_year' : start_year, 
+                    '_start_month' : start_month,
+                    '_end_year' : end_year, 
+                    '_end_month' : end_month, 
                     '_select' : select
                 } 
             })
             .done(function(result){
+                /* 
+                    result값 
+                    [ 
+                        [
+                            {
+                                    no: 161,
+                                    company: 'a',
+                                    code: 13,
+                                    bisiness: '식품',
+                                    unit_name: '케잌',
+                                    unit_sold: 10000,
+                                    amount: 1,
+                                    units_cost: 10000,
+                                    vat: 0,
+                                    writer: 'test',
+                                    year: 2022,
+                                    month: 2,
+                                    day: 27,
+                                    create_dt: '2022.2.27 오전 10:00',
+                                    etc: null
+                            }, {}, {}, {}
+                        ], 
+                        [ 
+                            { 
+                                vat: '56700', 
+                                cost: '1797000' 
+                            } 
+                        ] 
+                    ]
+                result[0] = [
+                                {
+                                        no: 161,
+                                        company: 'a',
+                                        code: 13,
+                                        bisiness: '식품',
+                                        unit_name: '케잌',
+                                        unit_sold: 10000,
+                                        amount: 1,
+                                        units_cost: 10000,
+                                        vat: 0,
+                                        writer: 'test',
+                                        year: 2022,
+                                        month: 2,
+                                        day: 27,
+                                        create_dt: '2022.2.27 오전 10:00',
+                                        etc: null
+                                }, {}, {}, {}
+                            ]
+                result[1] = [ 
+                                { 
+                                    vat: '56700', 
+                                    cost: '1797000' 
+                                } 
+                            ] 
+                result[1][0] = { 
+                                    vat: '56700', 
+                                    cost: '1797000' 
+                                } 
+                result[1][0]['vat'] = '56700'
+                
+                */
                 let html_data = ""
                 html_data += `
-                        <table class='table'>
+                        <button class='btn btn-primary' onclick='saveExcel()'>Excel Download</button>
+                        <table class='table' id='mytable'>
                             <tr>
+                                <th>No</th>
+                                <th>거래 코드</th>
                                 <th>거래처</th>
-                                <th>코드</th>
+                                <th>물품명</th>
+                                <th>단가</th>
+                                <th>수량</th>
+                                <th>거래 금액</th>
                                 <th>부가세</th>
-                                <th>거래금액</th>
+                                <th>작성자</th>
+                                <th>거래년도</th>
+                                <th>거래 월</th>
+                                <th>거래 일</th>
+                                <th>작성 시간</th>
+                                <th>비고</th>
                             </tr>
                     `
-                for(let i = 0; i < result.length; i++){
+                for(let i = 0; i < result[0].length; i++){
                     html_data += `
                         <tr>
-                            <td>${result[i]['bisiness']}</td>
-                            <td>${result[i]['code']}</td>
-                            <td>${result[i]['vat']}</td>
-                            <td>${result[i]['cost']}</td>
+                            <td>${i+1}</td>
+                            <td>${result[0][i]['code']}</td>
+                            <td>${result[0][i]['bisiness']}</td>
+                            <td>${result[0][i]['unit_name']}</td>
+                            <td>${result[0][i]['unit_sold']}</td>
+                            <td>${result[0][i]['amount']}</td>
+                            <td>${result[0][i]['units_cost']}</td>
+                            <td>${result[0][i]['vat']}</td>
+                            <td>${result[0][i]['writer']}</td>
+                            <td>${result[0][i]['year']}</td>
+                            <td>${result[0][i]['month']}</td>
+                            <td>${result[0][i]['day']}</td>
+                            <td>${result[0][i]['create_dt']}</td>
+                            <td>${result[0][i]['etc']}</td>
                         </tr>
                     `
                 }
+                // 합산 금액을 테이블에 추가 
+                html_data += `
+                    <tr class='table-primary'>
+                        <td colspan='6'>${start_year}년${start_month}월 ~ ${end_year}년${end_month}월 합산</td>
+                        <td colspan='2'>부가세 합산 금액</td>
+                        <td colspan='2'>${result[1][0]['vat']}</td>
+                        <td colspan='2'>거래 합산 금액</td>
+                        <td colspan='2'>${result[1][0]['cost']}</td>
+                    </tr>
+                `
                 html_data += '</table>'
                 $('#month_list').html(html_data)
             })
+        }
+
+        function saveExcel(){
+            // 파일명을 생성(기간)
+            const start_year = $('#start_year').val()
+            const start_month = $('#start_month').val()
+            const end_year = $('#end_year').val()
+            const end_month = $('#end_month').val()
+            const select = $('#select').val()
+            const filename = `${start_year}-${start_month}~${end_year}-${end_month} ${select} 합산 장부.xlsx`
+            
+            const wb = XLSX.utils.table_to_book(document.getElementById('mytable'), {raw:true})
+
+            XLSX.writeFile(wb, (filename))
         }
     </script>
 </head>
 <body>
     <div class="container">
         <div class="input-group mb-3">
-            <span class="input-group-text" id="input_year">년도</span>
-            <select class="form-select" id="year" aria-describedby="input_year">
+            <span class="input-group-text" id="input_year1">년도</span>
+            <select class="form-select" id="start_year" aria-describedby="input_year1">
                 <!-- 반복문을 이용하여 option 생성 -->
-                <% for(let i = 2020; i < 2024; i++){ %>
-                    <option value="<%=i%>"><%=i%></option>
+                <% for(let i = year-3; i < year+1; i++){ %>
+                    <% if (i == year) {%>
+                        <option value="<%=i%>" selected><%=i%></option>
+                    <%} else{%>
+                        <option value="<%=i%>"><%=i%></option>
+                    <%}%>
                 <%}%>
             </select>    
-            <span class="input-group-text" id="input_month">월</span>
-            <select class="form-select" id="month" aria-describedby="input_month">
+            <span class="input-group-text" id="input_month1">월</span>
+            <select class="form-select" id="start_month" aria-describedby="input_month1">
                 <% for(let i = 1; i < 13; i++){ %>
-                    <option value="<%=i%>"><%=i%></option>
+                    <%if (i == month){%>
+                        <option value="<%=i%>" selected><%=i%></option>
+                    <%} else{%>
+                        <option value="<%=i%>"><%=i%></option>
+                    <%}%>
+                <% } %>
+            </select> 
+            <span class="input-group-text">~</span>
+            <span class="input-group-text" id="input_year2">년도</span>
+            <select class="form-select" id="end_year" aria-describedby="input_year2">
+                <!-- 반복문을 이용하여 option 생성 -->
+                <% for(let i = year-3; i < year+1; i++){ %>
+                    <% if (i == year) {%>
+                        <option value="<%=i%>" selected><%=i%></option>
+                    <%} else{%>
+                        <option value="<%=i%>"><%=i%></option>
+                    <%}%>
+                <%}%>
+            </select>    
+            <span class="input-group-text" id="input_month2">월</span>
+            <select class="form-select" id="end_month" aria-describedby="input_month2">
+                <% for(let i = 1; i < 13; i++){ %>
+                    <%if (i == month){%>
+                        <option value="<%=i%>" selected><%=i%></option>
+                    <%} else{%>
+                        <option value="<%=i%>"><%=i%></option>
+                    <%}%>
                 <% } %>
             </select> 
             <span class="input-group-text" id="input_select">매입/매출</span>

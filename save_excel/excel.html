@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- table을 excel로 저장하기 위한 라이브러리 호출 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script>
+        function saveExcel(){
+            // 파일 명 설정
+            let filename = 'test.xlsx'
+
+            // 테이블 데이터를 시트에 삽입
+            let wb = XLSX.utils.table_to_book(document.getElementById('mytable'), {raw:true})
+
+            // 엑셀 파일로 저장
+            XLSX.writeFile(wb, (filename))
+        }
+    </script>
+</head>
+<body>
+    <button onclick="saveExcel()">excel 저장</button>
+    <table id="mytable" border="1">
+        <tr>
+            <th>No</th>
+            <th>name</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>kim</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>park</td>
+        </tr>
+    </table>
+</body>
+</html>

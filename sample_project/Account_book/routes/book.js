@@ -201,33 +201,60 @@ module.exports = function(){
         if(!req.session.logined){
             res.redirect('/')
         }else{
-            res.render('book_month')
+            // 현재 년도와 현재의 월 데이터를 같이 보내준다. 
+            let today = new Date()
+            let year = today.getFullYear()
+            // getMonth()는 0부터 11까지의 월로 표시
+            let month = today.getMonth() + 1
+            res.render('book_month', {
+                'year' : year, 
+                'month' : month
+            })
         }
     })
 
     // 월별 데이터를 로드하는 비동기 통신 api
     router.get('/select_month', async function(req, res){
         // 유저가 보낸 데이터를 변수에 대입 
-        const year = req.query._year
-        const month = req.query._month
+        const start_year = req.query._start_year
+        const start_month = req.query._start_month
+        const end_year = req.query._end_year
+        const end_month = req.query._end_month
         const select = req.query._select
+        const company = req.session.logined.company
+        const start = start_year + start_month
+        const end = end_year + end_month
+        // ex) start, end -> 20236, 202311
+        console.log(start, end)
         // sql에서 데이터를 로드 
         // 1. account_purchase에서 년도와 월이 같은 데이터를 출력
-        // 2. 코드와 월별로 그룹화를 하여 그룹 연산
+        // 2. 코드와 월별로 그룹화를 하여 그룹 연산\
+        // 월별 합산 금액 데이터를 로드 
         let result
+        let result2
         if(select == '매입'){
             result = await mydb.execute(
-                query.purchase_month, 
-                [year, month]
+                query.period_purchase, 
+                [company, start, end]
+            )
+            result2 = await mydb.execute(
+                query.period_purchase_sum, 
+                [company, start, end]
             )
         }else{
             result = await mydb.execute(
-                query.sales_month, 
-                [year, month]
+                query.period_sales, 
+                [company, start, end]
+            )
+            result2 = await mydb.execute(
+                query.period_sales_sum, 
+                [company, start, end]
             )
         }
+        
         console.log('/select_month - DB result :', result)
-        res.json(result)
+        console.log('/select_month - DB result2 :', result2)
+        res.json([result, result2])
         
 
     })

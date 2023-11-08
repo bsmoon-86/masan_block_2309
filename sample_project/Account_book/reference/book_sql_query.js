@@ -134,6 +134,61 @@ const auto_bisiness2 = `
         company = ?
 `
 
+const period_purchase = `
+        select 
+        * 
+        from 
+        account_purchase
+        where 
+        company = ? 
+        AND
+        concat(year, month) >= ?
+        AND
+        concat(year, month) <= ?
+`
+// ex) 202211 ~ 202303 데이터를 확인한다 -> 202211 크거나 같고 202303보다 작거나 같은 값
+
+const period_sales = `
+        select 
+        * 
+        from 
+        account_sales 
+        where 
+        company = ? 
+        AND
+        concat(year, month) >= ?
+        AND
+        concat(year, month) <= ?
+`
+
+const period_purchase_sum = `
+        select 
+        sum(vat) as vat, 
+        sum(units_cost) as cost
+        from 
+        account_purchase
+        where 
+        company = ? 
+        AND
+        concat(year, month) >= ?
+        AND
+        concat(year, month) <= ?
+`
+
+const period_sales_sum = `
+        select 
+        sum(vat) as vat, 
+        sum(units_cost) as cost
+        from 
+        account_sales
+        where 
+        company = ? 
+        AND
+        concat(year, month) >= ?
+        AND
+        concat(year, month) <= ?
+`
+
 module.exports={
     category, 
     insert_purchase, 
@@ -144,5 +199,9 @@ module.exports={
     purchase_month, 
     sales_month,
     auto_bisiness, 
-    auto_bisiness2
+    auto_bisiness2, 
+    period_purchase, 
+    period_sales, 
+    period_purchase_sum, 
+    period_sales_sum
 }
