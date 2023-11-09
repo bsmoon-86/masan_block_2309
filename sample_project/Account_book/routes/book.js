@@ -196,8 +196,8 @@ module.exports = function(){
         res.json(result)
     })
 
-    // 월별 데이터를 조회하는 api 
-    router.get('/month_total', function(req, res){
+    // 기간별 데이터를 조회하는 api 
+    router.get('/period_total', function(req, res){
         if(!req.session.logined){
             res.redirect('/')
         }else{
@@ -206,7 +206,7 @@ module.exports = function(){
             let year = today.getFullYear()
             // getMonth()는 0부터 11까지의 월로 표시
             let month = today.getMonth() + 1
-            res.render('book_month', {
+            res.render('book_period', {
                 'year' : year, 
                 'month' : month
             })
@@ -214,7 +214,7 @@ module.exports = function(){
     })
 
     // 월별 데이터를 로드하는 비동기 통신 api
-    router.get('/select_month', async function(req, res){
+    router.get('/select_period', async function(req, res){
         // 유저가 보낸 데이터를 변수에 대입 
         const start_year = req.query._start_year
         const start_month = req.query._start_month
@@ -258,6 +258,63 @@ module.exports = function(){
         
 
     })
+
+    // 월별 데이터를 조회하는 api 
+    router.get('/month_total', function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // 현재 년도와 현재의 월 데이터를 같이 보내준다. 
+            let today = new Date()
+            let year = today.getFullYear()
+            // getMonth()는 0부터 11까지의 월로 표시
+            let month = today.getMonth() + 1
+            res.render('book_month', {
+                'year' : year, 
+                'month' : month
+            })
+        }
+    })
+
+    // 월별 데이터를 로드하는 비동기 통신 api 
+    router.get('/select_month', async function(req, res){
+        // 유저가 보낸 데이터를 변수에 대입 
+        const year = req.query._start_year
+        const month = req.query._start_month
+        // 해당하는 기간에 거래처별 그룹화하여 부가세와 거래금액의 합계를 되돌려받는다.(매입, 매출)
+        const data = year+month
+        const purchase_result = await mydb.execute(
+            query.purchase_month, 
+            [data]
+        )
+        console.log("/select_month - purchase_result :", purchase_result)
+        const sales_result = await mydb.execute(
+            query.sales_month, 
+            [data]
+        )
+        console.log("/select_month - sales_result :", sales_result)
+        // 매입, 매출별 거래금액과 부가세의 합산
+        // 매입 거래금액, 부가세 합산
+        let purchase_cost = 0
+        let purchase_vat = 0
+        for (let i = 0; i < purchase_result.length; i++){
+            purchase_cost += Number(purchase_result[i]['cost'])
+            purchase_vat += Number(purchase_result[i]['vat'])
+        }
+        // 매출 거래금액, 부가세 합산
+        let sales_cost = 0
+        let sales_vat = 0
+        for (let i = 0; i < sales_result.length; i++){
+            sales_cost += Number(sales_result[i]['cost'])
+            sales_vat += Number(sales_result[i]['vat'])
+        }
+        // 순이익 = 매출거래금액합산 - 매입거래금액합산
+        let total_cost = sales_cost - purchase_cost
+        console.log("/select_month - 합산 금액 :", purchase_cost, purchase_vat, sales_cost, sales_vat, total_cost)
+        result = [purchase_result, sales_result, purchase_cost, purchase_vat, sales_cost, sales_vat, total_cost]
+        res.json(result)
+    })
+
 
     return router
 }

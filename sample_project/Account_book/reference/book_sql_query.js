@@ -82,36 +82,26 @@ const sales_list = `
 
 // purchase table를 그룹화 연산 query
 const purchase_month = `
-        select 
-        bisiness, 
-        code, 
-        SUM(vat) as vat,
-        SUM(units_cost) as cost
-        from 
-        account_purchase
-        where 
-        year = ? 
-        and
-        month = ?
-        group by 
-        blockchain.account_purchase.bisiness,
-        blockchain.account_purchase.code
+        SELECT bisiness, unit_name, 
+        min(unit_sold) as sold,
+        sum(amount) as amount, 
+        sum(units_cost) as cost, 
+        sum(vat) as vat
+        FROM account_purchase 
+        where concat(year, month) = ? 
+        group by bisiness, unit_name
+        order by bisiness, unit_name;
 `
 const sales_month = `
-        select 
-        bisiness, 
-        code, 
-        SUM(vat) as vat,
-        SUM(units_cost) as cost
-        from 
-        account_sales
-        where 
-        year = ? 
-        and
-        month = ?
-        group by 
-        blockchain.account_sales.bisiness,
-        blockchain.account_sales.code
+        SELECT bisiness, unit_name, 
+        min(unit_sold) as sold,
+        sum(amount) as amount, 
+        sum(units_cost) as cost, 
+        sum(vat) as vat
+        FROM account_sales 
+        where concat(year, month) = ? 
+        group by bisiness, unit_name
+        order by bisiness, unit_name;
 `
 
 // 자동 완성을 위한 query

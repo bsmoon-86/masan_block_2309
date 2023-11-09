@@ -31,7 +31,7 @@
     <script>
         function paging(){
             // 한페이지에서 보여줄 테이블의 인덱스 수
-            const rowPerPage = 3
+            const rowPerPage = 4
             const $table = $('#product')
 
             // table 뒤에 id 가 nav인 태그를 생성
@@ -45,11 +45,18 @@
 
             // 10/3 -> 3.333333 -> 4로 만드려면?
             const pageTotal = Math.ceil(rowTotals / rowPerPage)
-
+            $('<a href="#" rel=0><<</a>')
+                .appendTo('#nav')
             // 반복문을 이용하여 페이지 넘버를 nav 에 추가한다. 
             for (let i = 0; i < pageTotal; i++){
-                
-                $('<a href="#"></a>')
+                if(i == 0){
+                    $('<a href="#" class="active"></a>')
+                    .attr('rel', i)
+                    .html(i + 1)
+                    .appendTo('#nav')
+
+                }else{
+                    $('<a href="#"></a>')
                     .attr('rel', i)
                     // i가 0인 경우 <a href='#' rel=0></a>
                     // i가 1인 경우 <a href='#' rel=1></a>
@@ -62,7 +69,11 @@
                     //      <a href='#' rel=0> 1 </a>
                     //      <a href='#' rel=1> 2 </a>
                     // </div> 
+                }
             }
+            $('<a href="#">>></a>')
+                .attr('rel', pageTotal-1)
+                .appendTo('#nav')
 
             // tr들을 class에 off-screen를 추가
             $tr.addClass('off-screen')
@@ -90,10 +101,11 @@
                     .addClass('off-screen')
                     .slice(startItem, endItem)
                     .removeClass('off-screen')
-                    .animate({opacity : 1}, 1500)
+                    .animate({opacity : 1}, 300)
             })
-
-            $pageLink.filter(':first').addClass('active')
+            // :first -> 첫번째 태그를 선택
+            // :even -> 홀수 태그들을 선택
+            // $pageLink.addClass('active')
 
 
         }
