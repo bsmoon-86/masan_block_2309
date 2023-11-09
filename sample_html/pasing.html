@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- jQurey 라이브러리 로드 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <!-- style 지정 -->
+    <style>
+        .off-screen{
+            display : none;
+        }
+        #nav {
+            width : 500px;
+            text-align : center;
+        }
+        #nav a {
+            display : inline-block;
+            padding : 3px 5px;
+            margin-right: 10px;
+            background: #ccc;
+            color : black;
+            text-decoration: none;
+        }
+        #nav a.active{
+            background: black;
+            color : #ccc;
+        }
+    </style>
+    <script>
+        function paging(){
+            // 한페이지에서 보여줄 테이블의 인덱스 수
+            const rowPerPage = 3
+            const $table = $('#product')
+
+            // table 뒤에 id 가 nav인 태그를 생성
+            $table.after('<div id="nav"></div>')
+
+            // tbody 안에 존재하는 tr 태그들을 선택
+            const $tr = $($table).find('tbody tr')
+            // $tr은 tbody 안에 있는 tr태그들이 리스트의 형태로 대입
+            // 인덱스의 수를 체크
+            const rowTotals = $tr.length
+
+            // 10/3 -> 3.333333 -> 4로 만드려면?
+            const pageTotal = Math.ceil(rowTotals / rowPerPage)
+
+            // 반복문을 이용하여 페이지 넘버를 nav 에 추가한다. 
+            for (let i = 0; i < pageTotal; i++){
+                
+                $('<a href="#"></a>')
+                    .attr('rel', i)
+                    // i가 0인 경우 <a href='#' rel=0></a>
+                    // i가 1인 경우 <a href='#' rel=1></a>
+                    .html(i + 1)
+                    // <a href='#' rel=0> 1 </a>
+                    // <a href='#' rel=1> 2 </a>
+                    .appendTo('#nav')
+                    // appendTo() : 특정한 태그에 해당하는 태그값을 추가 
+                    // <div id='nav'>
+                    //      <a href='#' rel=0> 1 </a>
+                    //      <a href='#' rel=1> 2 </a>
+                    // </div> 
+            }
+
+            // tr들을 class에 off-screen를 추가
+            $tr.addClass('off-screen')
+                .slice(0, rowPerPage)
+                .removeClass('off-screen')
+
+            // id가 nav인 태그 안에 있는 a태그들을 변수에 대입
+            const $pageLink = $('#nav a')
+            $pageLink.on('click', function(evt){
+                // 기본 동작은 방지(정지)
+                // evt : 기본 동작
+                evt.preventDefault()
+
+                $pageLink.removeClass('active')
+                $(this).addClass('active')
+
+                // 클릭한 a태그의 rel 값을 추출
+                const currPage = $(this).attr('rel')
+                // 보여줄 데이터의 시작 위치 값 지정
+                const startItem = currPage * rowPerPage
+                // 보여줄 데이터의 마지막 위치 값 지정
+                const endItem = startItem + rowPerPage
+
+                $tr.css('opacity', '0.0')
+                    .addClass('off-screen')
+                    .slice(startItem, endItem)
+                    .removeClass('off-screen')
+                    .animate({opacity : 1}, 1500)
+            })
+
+            $pageLink.filter(':first').addClass('active')
+
+
+        }
+    </script>
+</head>
+<body onload="paging()">
+    <!-- pasing 작업을 할 table tag 생성 -->
+    <table id="product" border="1">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>kim</td>
+                <td>20</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>park</td>
+                <td>30</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>lee</td>
+                <td>25</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>choi</td>
+                <td>34</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>jo</td>
+                <td>40</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>moon</td>
+                <td>37</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>son</td>
+                <td>27</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>park</td>
+                <td>42</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>jin</td>
+                <td>35</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>kim</td>
+                <td>23</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
