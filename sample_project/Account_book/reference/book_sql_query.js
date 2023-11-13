@@ -88,7 +88,7 @@ const purchase_month = `
         sum(units_cost) as cost, 
         sum(vat) as vat
         FROM account_purchase 
-        where concat(year, month) = ? 
+        where concat(year, month) = ? and company = ?
         group by bisiness, unit_name
         order by bisiness, unit_name;
 `
@@ -99,7 +99,7 @@ const sales_month = `
         sum(units_cost) as cost, 
         sum(vat) as vat
         FROM account_sales 
-        where concat(year, month) = ? 
+        where concat(year, month) = ? and company = ?
         group by bisiness, unit_name
         order by bisiness, unit_name;
 `

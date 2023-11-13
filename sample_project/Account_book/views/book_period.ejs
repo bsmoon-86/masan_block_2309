@@ -159,6 +159,7 @@
             const rowPerPage = Number(_int)
             const $table = $('#mytable')
             $('#nav').remove()
+            // 태그데이터.after(태그) : 태그데이터 뒤에 태그를 추가
             $table.after('<div id="nav"></div>')
 
             const $tr = $($table).find('tbody tr')

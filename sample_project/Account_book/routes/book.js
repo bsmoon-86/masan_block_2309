@@ -13,6 +13,9 @@ const mydb = new sql_class.Mysql(
 // book에서 사용할 query이 모여있는 파일을 로드 
 const query = require('../reference/book_sql_query')
 
+// 배포한 smartcontract에 함수들을 사용하기 위한 외부의 모듈을 로드 
+const baobab = require('../reference/baobab')
+
 // kip7파일을 로드 
 const kip7 = require('../reference/kip7')
 
@@ -281,16 +284,18 @@ module.exports = function(){
         // 유저가 보낸 데이터를 변수에 대입 
         const year = req.query._start_year
         const month = req.query._start_month
+        // 소속회사의 이름을 변수에 대입
+        const company = req.session.logined.company
         // 해당하는 기간에 거래처별 그룹화하여 부가세와 거래금액의 합계를 되돌려받는다.(매입, 매출)
         const data = year+month
         const purchase_result = await mydb.execute(
             query.purchase_month, 
-            [data]
+            [data, company]
         )
         console.log("/select_month - purchase_result :", purchase_result)
         const sales_result = await mydb.execute(
             query.sales_month, 
-            [data]
+            [data, company]
         )
         console.log("/select_month - sales_result :", sales_result)
         // 매입, 매출별 거래금액과 부가세의 합산
@@ -311,7 +316,26 @@ module.exports = function(){
         // 순이익 = 매출거래금액합산 - 매입거래금액합산
         let total_cost = sales_cost - purchase_cost
         console.log("/select_month - 합산 금액 :", purchase_cost, purchase_vat, sales_cost, sales_vat, total_cost)
-        result = [purchase_result, sales_result, purchase_cost, purchase_vat, sales_cost, sales_vat, total_cost]
+
+        // 해당하는 장부가 블록체인에 저장되어있는가?
+        // 등록된 장부의 리스트를 로드 -> []데이터에 조회를 한 년월 데이터가 존재하는가?
+        // 등록된 장부의 리스트를 로드하기위해 필요한 인자 값 -> 회사명 -> company 변수에 데이터를 대입
+        const book_list = await baobab.view_list(company)
+        console.log("/select_month book_list -", book_list)
+        // 조건식이 생성 -> 선택한 기간이 장부의 리스트에 존재하는가?
+        // ex) 202311 데이터를 조회하는 경우 -> 장부의 리스트에 [202310, 202311]가 존재한다.
+        // 배열 안에 데이터가 존재하는가를 확인하는 비교연산자? -> in
+        let book_result
+        if (data in book_list){
+            // 배열데이터에 data가 포함되어있는 경우 -> 장부 리스트에 이미 저장되어있다 -> 장부를 저장하는 버튼 생성x
+            book_result = false
+        }else{
+            // 장부 리스트에 데이터가 존재하지 않는다 -> 장부를 저장하는 버튼 생성
+            book_result = true
+        }
+
+        result = [purchase_result, sales_result, purchase_cost, 
+            purchase_vat, sales_cost, sales_vat, total_cost, book_result]
         res.json(result)
     })
 

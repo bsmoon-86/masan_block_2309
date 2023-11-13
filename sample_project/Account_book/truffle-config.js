@@ -41,7 +41,14 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// require('dotenv').config();
+require('dotenv').config();
+// testnet에 contract를 배포하기위해서는 수수료를 지불할 지갑의 private_key
+const private = process.env.private_key
+// testnet 주소 값
+const URL = "https://api.baobab.klaytn.net:8651"
+// kalytn에 컨트렉트를 배포하기위한 라이브러리 로드 
+const HDWalletProvider = require('truffle-hdwallet-provider-klaytn')
+
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
@@ -58,6 +65,12 @@ module.exports = {
    */
 
   networks: {
+    baobab : {
+      provider : new HDWalletProvider(private, URL), 
+      network_id : 1001, 
+      gas : 20000000, 
+      gasPrice : null
+    }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache, geth, or parity) in a separate terminal

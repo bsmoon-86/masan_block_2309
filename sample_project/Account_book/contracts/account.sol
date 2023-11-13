@@ -26,12 +26,15 @@ contract Account{
     }
 
     // 구조체 (커스텀한 데이터의 타입 만드는 과정)
+    // 숫자형태의 데이터는 데이터가 존재하지 않는다면 0을 출력
+    // 주소 형태의 데이터는 데이터가 존재하지 않는다면 address(0) 출력
     struct book_list{
         uint purchase_vat;
         uint purchase_cost;
         uint sales_vat;
         uint sales_cost;
         uint profit;
+        address register;
     }
 
     // mapping data
@@ -66,11 +69,17 @@ contract Account{
         uint _purchase_vat, 
         uint _purchase_cost, 
         uint _sales_vat, 
-        uint _sales_cost
+        uint _sales_cost, 
+        address _register
     ) public onlyOwner() {
+        // 해당하는 함수를 호출하기위한 요구 조건
+        // 기존에 데이터가 저장되어 있다면 다시 기입을 할 수 없도록 한다. (데이터 등록에 수수료 중복납입 방지)
+        // 구조체를 기준으로 데이터가 존재하는지 확인
+
         // books mapping에 데이터를 삽입
         string memory key = string.concat(_company, _date);
-        books[key] = book_list(_purchase_vat, _purchase_cost, _sales_vat, _sales_cost, _sales_cost - _purchase_cost);
+        require(books[key].register == address(0), "Exist Data");
+        books[key] = book_list(_purchase_vat, _purchase_cost, _sales_vat, _sales_cost, _sales_cost - _purchase_cost, _register);
         // company_book mapping에 데이터 삽입
         company_book[_company].push(_date);
     }
@@ -84,6 +93,17 @@ contract Account{
     ){
         string memory key = string.concat(_company, _date);
         return books[key];
+    }
+
+    // 회사별 등록된 장부의 리스트를 확인하는 함수
+    // company_book 이라는 맵핑 데이터의 벨류 값을 출력
+    // 해당하는 벨류를 출력하기 위해서는 company_book의 키값(회사명)이 필요하다. 
+    function view_book_list(
+        string memory _company
+    ) public view returns(
+        string[] memory
+    ){
+        return company_book[_company];
     }
 
 }
