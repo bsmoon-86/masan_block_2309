@@ -56,6 +56,16 @@ module.exports = function(){
         if(result.length != 0){
             // 로그인 성공 
             // session에 로그인 정보를 저장 
+            /* 
+                {
+                    id : xxxxx,
+                    password : xxxxx, 
+                    name : xxxx, 
+                    company : xxxx, 
+                    wallet_address : xxxxx, 
+                    private_key : xxxxx 
+                }
+            */
             req.session.logined = result[0]
             // main page로 이동
             res.redirect('/book')

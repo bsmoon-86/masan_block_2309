@@ -40,7 +40,7 @@ async function add_data(
     _register
 ){
     // smartcontract안에 있는 add_book()함수를 호출
-    await smartcontract
+    const result = await smartcontract
         .methods
         .add_book(
             _company, 
@@ -56,10 +56,9 @@ async function add_data(
             from : account.address, 
             gas : 2000000
         })
-        .then(function(result){
-            console.log('BC - add_book() result -', result)
-            return "add data success"
-        })
+    
+    console.log('BC - add_book() result -', result)
+    return "add data success"
 }
 
 // 뷰 함수1 : 월별 장부의 정보를 출력하는 함수

@@ -155,48 +155,64 @@
         }
 
         function paging(_int){
-            // paging 기능 추가 
-            const rowPerPage = Number(_int)
-            const $table = $('#mytable')
-            $('#nav').remove()
-            // 태그데이터.after(태그) : 태그데이터 뒤에 태그를 추가
-            $table.after('<div id="nav"></div>')
+            if(_int != 0){
+                // paging 기능 추가 
+                const rowPerPage = Number(_int)
+                const $table = $('#mytable')
+                $('#nav').remove()
+                // 태그데이터.after(태그) : 태그데이터 뒤에 태그를 추가
+                $table.after('<div id="nav"></div>')
 
-            const $tr = $($table).find('tbody tr')
-            const rowTotals = $tr.length
-            const pageTotal = Math.ceil(rowTotals/rowPerPage)
+                const $tr = $($table).find('tbody tr')
+                const rowTotals = $tr.length
+                const pageTotal = Math.ceil(rowTotals/rowPerPage)
 
-            for(let i = 0; i < pageTotal; i++){
-                $('<a href="#"></a>')
-                    .attr('rel', i)
-                    .html(i+1)
-                    .appendTo('#nav')
-            }
+                // tbody에 있는 모든 tr태그는 투명도 1 변경
+                $tr.css('opacity', "1")
 
-            $tr.addClass('off-screen')
-                .slice(0, rowPerPage)
-                .removeClass('off-screen')
+                for(let i = 0; i < pageTotal; i++){
+                    $('<a href="#"></a>')
+                        .attr('rel', i)
+                        .html(i+1)
+                        .appendTo('#nav')
+                }
 
-            const $pageLink = $('#nav a')
-            $pageLink.on('click', function(evt){
-                evt.preventDefault()
-
-                $pageLink.removeClass('active')
-                $(this).addClass('active')
-
-                const currPage = $(this).attr('rel')
-                const startItem = currPage * rowPerPage
-                const endItem = startItem + rowPerPage
-                console.log( currPage, startItem, endItem)
-
-                $tr.css('opacity', '0.0')
-                    .addClass('off-screen')
-                    .slice(startItem, endItem)
+                $tr.addClass('off-screen')
+                    .slice(0, rowPerPage)
                     .removeClass('off-screen')
-                    .animate({opacity : 1}, 300)
-            })
 
-            $pageLink.filter(':first').addClass('active')
+                const $pageLink = $('#nav a')
+                $pageLink.on('click', function(evt){
+                    evt.preventDefault()
+
+                    $pageLink.removeClass('active')
+                    $(this).addClass('active')
+
+                    const currPage = $(this).attr('rel')
+                    const startItem = currPage * rowPerPage
+                    const endItem = startItem + rowPerPage
+                    console.log( currPage, startItem, endItem)
+
+                    $tr.css('opacity', '0.0')
+                        .addClass('off-screen')
+                        .slice(startItem, endItem)
+                        .removeClass('off-screen')
+                        .animate({opacity : 1}, 300)
+                })
+
+                $pageLink.filter(':first').addClass('active')
+            }else{
+                // _int가 0인 경우에는 tbody 안에 있는 tr 태그들은 off-screen class를 모두 제거 
+                // id가 nav인 태그를 제거 
+                // opacity를 1로 고정
+                const $table = $('#mytable')
+                $('#nav').remove()
+
+                const $tr = $($table).find('tbody tr')
+                $tr.removeClass('off-screen')
+                $tr.css('opacity', '1')
+
+            }
         }
 
         function saveExcel(){
@@ -239,6 +255,12 @@
 <body>
     <div class="container">
         <div class="input-group mb-3">
+            
+            <select class="form-select" id="page">
+                <option value=0>전체보기</option>
+                <option value=10>10개씩 보기</option>
+                <option value=20>20개씩 보기</option>
+            </select>
             <span class="input-group-text" id="input_year1">년도</span>
             <select class="form-select" id="start_year" aria-describedby="input_year1">
                 <!-- 반복문을 이용하여 option 생성 -->
@@ -288,13 +310,6 @@
                 <option value="매출">매출</option>
             </select> 
             <button class="btn btn-primary" onclick="search()"> 조회</button>
-        </div>
-        <div class="container">
-            <select id="page">
-                <option value=0>전체보기</option>
-                <option value=10>10개씩 보기</option>
-                <option value=20>20개씩 보기</option>
-            </select>
         </div>
         <div id="month_list" class="container">
         </div>

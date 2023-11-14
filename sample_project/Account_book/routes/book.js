@@ -324,19 +324,127 @@ module.exports = function(){
         console.log("/select_month book_list -", book_list)
         // 조건식이 생성 -> 선택한 기간이 장부의 리스트에 존재하는가?
         // ex) 202311 데이터를 조회하는 경우 -> 장부의 리스트에 [202310, 202311]가 존재한다.
-        // 배열 안에 데이터가 존재하는가를 확인하는 비교연산자? -> in
+        // 배열 안에 데이터가 존재하는가를 확인하는 비교연산자? -> 리스트명.includes(data값)
         let book_result
-        if (data in book_list){
+        if (book_list.includes(data)){
             // 배열데이터에 data가 포함되어있는 경우 -> 장부 리스트에 이미 저장되어있다 -> 장부를 저장하는 버튼 생성x
             book_result = false
         }else{
             // 장부 리스트에 데이터가 존재하지 않는다 -> 장부를 저장하는 버튼 생성
             book_result = true
         }
-
+        // console.log('data : ', data)
+        // console.log('if : ', book_list.includes(data))
+        // console.log('book_result : ', book_result)
         result = [purchase_result, sales_result, purchase_cost, 
             purchase_vat, sales_cost, sales_vat, total_cost, book_result]
         res.json(result)
+    })
+
+    // /saveBlockchain 주소를 생성 
+    // 유저가 보낸 데이터를 blockchain 저장
+    router.get('/saveBlockchain', async function(req, res){
+        // 유저가 보낸 데이터를 변수에 대입 
+        const purchase_vat = req.query.pur_vat
+        const purchase_cost = req.query.pur_cost
+        const sales_vat = req.query.sales_vat
+        const sales_cost = req.query.sales_cost
+        const date = req.query.date
+        console.log("/saveBlockchain request message : ", purchase_vat, purchase_cost, sales_vat, sales_cost, date)
+        // 블록체인에 배포된 smartconstract에 저장하기 위해서 필요한 데이터는?
+        // 회사명, 기준년월, 매입 총 부가세, 매입 총 거래금액, 매출 총 부가세, 매출 총 거래금액, 등록한 사람의 지갑 주소
+        // baobab.js 모듈에 작성된 add_data()함수 호출
+        const company = req.session.logined.company
+        const wallet = req.session.logined.wallet_address
+        const result = await baobab.add_data(
+            company, 
+            date, 
+            purchase_vat, 
+            purchase_cost, 
+            sales_vat, 
+            sales_cost, 
+            wallet
+        )
+        console.log('/saveBlockchain BC result -', result)
+        // localhost:3000/book으로 재 요청을 보낸다. 
+        res.redirect('/book')
+    })
+
+    // 데이터베이스에 있는 월별 장부 정보와 blockchain에 있는 월별 장부의 정보가 일치하는가?
+
+    // 장부 데이터가 데이터베이스와 블록체인 데이터가 일치하는지 여부를 보여주는 페이지 api 
+    router.get('/check_book', async function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            // 블록체인에 등록되어있는 장부의 리스트 호출 
+            // baobab.js에 있는 view_list() 함수 호출 
+            // 해당하는 함수에서 필요한 인자값 : 회사명(세션데이터 존재)
+            const company = req.session.logined.company
+            const book_list = await baobab.view_list(company)
+            console.log('/check_book BC book_list - ', book_list)
+            // 기준년월 데이터를 확인하여 데이터베이스의 정보와 블록체인에서 장부의 정보를 로드 
+            // book_list는 배열의 데이터 -> 데이터의 길이만큼 반복하는 반복문 생성
+            // // for문 - case1
+            // for (i in book_list){
+            //     console.log(book_list[i])
+            // }
+            // // for문 - case2
+            // for (let i = 0; i < book_list.length; i++){
+            //     console.log(book_list[i])
+            // }
+            // 비어있는 배열을 생성 
+            let result = []
+            let db_result = []
+            // for문 - case3
+            for (i of book_list){
+                // i가 뜻하는바? -> 장부가 등록된 기준 년월 데이터
+                // baobab.js에서 view_data() 함수 호출
+                // 해당하는 함수에서 필요한 인자 값 : 회사명, 기준년월
+                let bc_result = await baobab.view_data(company, i)
+                // 해당하는 bc_result를 비어있는 배열에 추가
+                result.push(bc_result)
+                // console.log(result)
+
+                // DB에서 정보를 로드 
+                let purchase_list = await mydb.execute(
+                    query.purchase_month, 
+                    [i, company]
+                )
+                let sales_list = await mydb.execute(
+                    query.sales_month, 
+                    [i, company]
+                )
+
+                // purchase_list의 데이터의 형태 -> [{bisiness : xxx, unit_name:xxx, sold:xxx, amount:xxx, cost:xxxx, vat:xxx}, ...]
+                // 배열 데이터의 합 -> 반복문 
+                let purchase_cost = 0
+                let purchase_vat = 0
+                for (data of purchase_list){
+                    // data의 형태 -> {bisiness : xxx, unit_name:xxx, sold:xxx, amount:xxx, cost:xxxx, vat:xxx}
+                    purchase_cost += Number(data['cost'])
+                    purchase_vat += Number(data['vat'])
+                }
+                let sales_cost = 0
+                let sales_vat = 0
+                for (data of sales_list){
+                    sales_cost += Number(data['cost'])
+                    sales_vat += Number(data['vat'])
+                }
+
+                // 순 매출 = 총 매출 거래 금액 - 총 매입 거래 금액
+                const cost = sales_cost - purchase_cost
+
+                // DB를 이용해 만들 변수 값들을 db_result에 추가 
+                db_result.push([purchase_vat, purchase_cost, sales_vat, sales_cost, cost])
+
+            }
+            res.render('book_check', {
+                'date' : book_list,
+                'bc_data' : result, 
+                'db_data' : db_result
+            })
+        }
     })
 
 
