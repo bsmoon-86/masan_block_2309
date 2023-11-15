@@ -32,8 +32,26 @@ module.exports = function(){
 
     // 기본 경로는? localhost:3000/user
 
-    router.get("/", function(req, res){
-        res.render('signin')
+    router.get("/", async function(req, res){
+        // session에 로그인 정보가 존재한다면 signin페이지에 로그인 정보를 담아서 보내준다. 
+        // session에 로그인 정보가 존재하지 않는다면 데이터는 비어있는 데이터를 보내준다. 
+        if(!req.session.logined){
+            res.render('signin', {
+                'login_data' : ''
+            })
+        }else{
+            // 로그인을 한 유저의 지갑에 있는 token양을 session 데이터와 같이 보낸다. 
+            // 유저가 소유하고 있는 token양 -> kip7.js에 있는 balance() 함수를 호출하여 토큰의 양을 받아온다.
+            // balance() 함수에서는 유저의 지갑 주소(세션 데이터 존재)가 필요
+            const user_address = req.session.logined.wallet_address
+            const token_amount = await kip7.balance(user_address)
+            // data라는 변수에 token_amount 값을 추가 (json데이터에 새로운 키:벨류의 데이터를 추가)
+            req.session.logined.amount = token_amount
+            console.log("session data : ", req.session.logined)
+            res.render('signin', {
+                'login_data' : req.session.logined
+            })
+        }
     })
 
     // 로그인 api 생성
@@ -68,7 +86,7 @@ module.exports = function(){
             */
             req.session.logined = result[0]
             // main page로 이동
-            res.redirect('/book')
+            res.redirect('/user')
         }else{
             // 로그인 실패
             res.redirect('/user')

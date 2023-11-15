@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs') %>
+    <script>
+        $(document).ready(function(){
+        // id가 select1인 태그가 변할때 라는 이벤트 리스너 생성
+            $('#select1').change(function(){
+                // 변경된 value 값을 로드 
+                const type = $('#select1 option:selected').val()
+                console.log(type)
+                // 비동기 통신을 이용하여 선택된 type의 category정보를 받아온다. 
+                $.ajax(
+                    {
+                        url : '/book/cate', 
+                        method : 'get', 
+                        dataType : 'json', 
+                        data : {
+                            "_type" : type
+                        }
+                    }
+                )
+                .done(function(result){
+                    $('#select2 option').remove()
+                    // select2에 option을 추가해준다. 
+                    // result는 [{}, {}, {}, {}]
+                    for(let i = 0; i < result.length; i++){
+                        $('#select2').append(`<option value=${result[i].code}>${result[i].name}</option>`)
+                    }
+                    // id가 bisiness_search인 태그를 선택하여 option값들을 모두 제거하고 새로운 option을 추가
+                    $('#bisiness_search option').remove()
+                    if(type == '매입'){
+                        <%
+                            for(let j = 0; j < purchase.length; j++){
+                        %>
+                                $('#bisiness_search').append(`<option value="<%=purchase[j]['bisiness']%>" />`)
+                        <%
+                                }
+                        %>
+                    }else{
+                        <%
+                            for(let j = 0; j < sales.length; j++){
+                        %>
+                                $('#bisiness_search').append(`<option value="<%=sales[j]['bisiness']%>" />`)
+                        <%
+                                }
+                        %>
+                    }
+                })
+            })
+
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form action="/book/add2" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_type">매입 / 매출</span>
+                <select class="form-select" id="select1" name="_type" aria-describedby="input_type">
+                    <option selected>매입 / 매출 선택</option>
+                    <option value="매입">매입</option>
+                    <option value="매출">매출</option>
+                </select>    
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_code">구분</span>
+                <select class="form-select" id="select2" name="_code" aria-describedby="input_code">
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_bisiness">거래처</span>
+                <input type="text" name="_bisiness" class="form-control" aria-describedby="input_bisiness" list="bisiness_search">
+                <!-- 자동완성의 리스트를 생성 -->
+                <datalist id="bisiness_search">
+                    <!-- 매입이냐 매출이냐 지정을 하고 난 뒤 option를 추가 -->
+                </datalist>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_name">거래 품목</span>
+                <input type="text" name="_name" class="form-control" aria-describedby="input_name">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_sold">단가</span>
+                <input type="text" name="_sold" id="sold" class="form-control" aria-describedby="input_sold">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_amount">수량</span>
+                <input type="text" name="_amount" id="amount" class="form-control" aria-describedby="input_amount">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_cost">거래 금액</span>
+                <input type="text" name="_cost" id="cost" class="form-control" aria-describedby="input_cost">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_date">거래 일자</span>
+                <input type="date" name="_date" class="form-control" aria-describedby="input_date">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="input_etc">비고</span>
+                <textarea name="_etc" class="form-control" aria-describedby="input_etc"></textarea>
+            </div>
+            <input type="submit" value="장부등록" class="btn btn-primary">
+        </form>
+    </div>
+    <script>
+            // 자리수가 4자리 이상인 경우 세 자리마다 콤마를 추가 
+            // 3개의 태그를 선택하여 키보드의 키가 올라왔을때(입력 이벤트 리스너)
+            $('#sold, #amount, #cost').keyup(function(){
+                // 입력하는 태그의 value 로드 
+                // this : 자기 자신
+                let value = $(this).val()
+                // 현재 input 데이터는 한글임으로 숫자형태로 데이터를 변환
+                value = Number(value.replaceAll(',', ''))
+                console.log(value)
+                // 만약에 value가 결측치라면?
+                // is____ 함수 : ____에 들어가는 데이터에 따라 해당하는 값이 존재하면 true 존재하지않으면 false 
+                // NaN : 결측치(데이터가 존재하지 않음)
+                if(isNaN(value)){
+                    // 데이터가 존재하지 않는 경우
+                    $(this).val(0)
+                }else{
+                    // 데이터가 존재하는 경우
+                    const formatValue = value.toLocaleString('ko-KR')
+                    $(this).val(formatValue)
+                }
+            })
+    </script>
+</body>
+</html>

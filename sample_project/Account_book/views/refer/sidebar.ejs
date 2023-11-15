@@ -1,0 +1,90 @@
+    <!-- 사이드바  -->
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+        <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+          </div>
+            <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+             <!-- 로그인 영역 -->
+             <div class="container">
+                <!-- 로그인 정보가 존재하는 않는 경우 로그인 화면 -->
+                <% if(login_data == ''){%>
+                <form action="/user/signin" method="post">
+                    <!-- id를 입력하는 부분 -->
+                    <div class="input-group mb-3">
+                        <input type="text" name="_id" class="form-control" placeholder="ID" aria-label="ID" aria-describedby="basic-addon1">
+                    </div>
+                    <!-- password를 입력하는 부분 -->
+                    <div class="input-group mb-3">
+                        <input type="password" name="_pass" class="form-control" placeholder="PASSWORD" aria-label="PASSWORD" aria-describedby="basic-addon2">
+                    </div>
+                    <div class="container" style="align-items: center;">
+                        <input type="submit" value="로그인" class="btn btn-primary">
+                        <!-- 
+                            하이퍼링크 생성 : 주소에 /user/signup 입력시 localhost:3000/user/signup주소로 요청
+                            href 속성의 값 : 파일의 경로, element값, url 주소
+                        -->
+                        <a href="/user/signup" class="btn btn-danger">회원가입</a>
+                    </div>
+                </form>
+                <!-- 로그인 정보가 존재하면 내 정보 -->
+                <%} else{ %>
+                    <p>이름 : <%=login_data.name%></p>
+                    <p>소속 : <%=login_data.company%></p>
+                    <p>토큰 수량 : <%=login_data.amount%></p>
+                    
+                <% }%>
+            </div>
+  
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+              <span>Menu</span>
+            </h6>
+            <ul class="nav flex-column mb-auto">
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="/book/add">
+                  <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
+                  장부 등록
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="/book/period_total">
+                  <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
+                  기간별 장부 조회
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="/book/month_total">
+                  <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
+                  월별 장부 조회
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="/book/check_book">
+                  <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
+                  등록된 장부 리스트
+                </a>
+              </li>
+            </ul>
+  
+            <hr class="my-3">
+  
+            <ul class="nav flex-column mb-auto">
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                  <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
+                  Settings
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                  <svg class="bi"><use xlink:href="#door-closed"/></svg>
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+  
+  

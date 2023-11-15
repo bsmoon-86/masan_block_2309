@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include ('./refer/head.ejs')%>
+    <script>
+        $(document).ready(function(){
+            // id가 select1인 태그가 변할때 라는 이벤트 리스너
+            $('#select1').change(function(){
+                // 변경이 되는 value 값을 로드 
+                const type = $('#select1 option:selected').val()
+                // 비동기 통신을 이용하여 매입/매출 장부를 로드 
+                $.ajax({
+                    url : '/book/select_list', 
+                    method : 'get', 
+                    dataType : 'json', 
+                    data : {
+                        "_type" : type
+                    }                    
+                })
+                .done(function(result){
+                    // result의 데이터를 형태는? [{}, {}, {}]
+                    let html_data = ""
+                    html_data += `
+                            <table border=1 class="table table-borderless">
+                                <tr>
+                                    <th>No</th>
+                                    <th>코드</th>
+                                    <th>거래처</th>
+                                    <th>거래 품명</th>
+                                    <th>단가</th>
+                                    <th>개수</th>
+                                    <th>거래 금액</th>
+                                    <th>부가세</th>
+                                    <th>작성자</th>
+                                    <th>년</th>
+                                    <th>월</th>
+                                    <th>일</th>
+                                    <th>작성 시간</th>
+                                    <th>비고</th>
+                                </tr>
+                        `
+                    // 행을 추가하는 부분
+                    for(let i = 0; i < result.length;i++){
+                        html_data += `
+                            <tr>
+                                <td>${result[i]["no"]}</td>
+                                <td>${result[i]["code"]}</td>
+                                <td>${result[i]["bisiness"]}</td>
+                                <td>${result[i]["unit_name"]}</td>
+                                <td>${result[i]["unit_sold"]}</td>
+                                <td>${result[i]["amount"]}</td>
+                                <td>${result[i]["units_cost"]}</td>
+                                <td>${result[i]["vat"]}</td>
+                                <td>${result[i]["writer"]}</td>
+                                <td>${result[i]["year"]}</td>
+                                <td>${result[i]["month"]}</td>
+                                <td>${result[i]["day"]}</td>
+                                <td>${result[i]["create_dt"]}</td>
+                                <td>${result[i]["etc"]}</td>
+                            </tr>
+                        `
+                    }
+                    html_data += "</table>"
+                    $('#book_list').html(html_data)
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- select를 이용하여 매입 매출 선택 -->
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="input_type">매입 / 매출</span>
+            <select class="form-select" id="select1" name="_type" aria-describedby="input_type">
+                <option selected>매입 / 매출 선택</option>
+                <option value="매입">매입</option>
+                <option value="매출">매출</option>
+            </select>    
+        </div>
+        <!-- 장부가 보여질 공간 생성 -->
+        <div id="book_list" class="container">
+
+        </div>
+    </div>
+
+</body>
+</html>

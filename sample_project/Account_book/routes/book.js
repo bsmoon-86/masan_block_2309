@@ -51,7 +51,8 @@ module.exports = function(){
             console.log(purchase, sales)
             res.render('book_add.ejs', {
                 'purchase' : purchase, 
-                'sales' : sales
+                'sales' : sales, 
+                'login_data' : req.session.logined
             })
         }
     })
@@ -211,7 +212,8 @@ module.exports = function(){
             let month = today.getMonth() + 1
             res.render('book_period', {
                 'year' : year, 
-                'month' : month
+                'month' : month, 
+                'login_data' : req.session.logined
             })
         }
     })
@@ -274,7 +276,8 @@ module.exports = function(){
             let month = today.getMonth() + 1
             res.render('book_month', {
                 'year' : year, 
-                'month' : month
+                'month' : month, 
+                'login_data' : req.session.logined
             })
         }
     })
@@ -442,7 +445,8 @@ module.exports = function(){
             res.render('book_check', {
                 'date' : book_list,
                 'bc_data' : result, 
-                'db_data' : db_result
+                'db_data' : db_result, 
+                'login_data' : req.session.logined
             })
         }
     })

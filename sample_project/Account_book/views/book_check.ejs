@@ -1,56 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <%- include('refer/head.ejs') %>
-</head>
-<body>
-    <h1>장부 데이터를 체크</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th rowspan="2">기준년월</th>
-                <th colspan="2">총 부가세(매입)</th>
-                <th colspan="2">총 거래 금액(매입)</th>
-                <th colspan="2">총 부가세(매출)</th>
-                <th colspan="2">총 거래 금액(매출)</th>
-                <th colspan="2">총 매출</th>
-                <th rowspan="2">등록자</th>
-            </tr>
-            <tr>
-                <th>DB</th>
-                <th>BlockChain</th>
-                <th>DB</th>
-                <th>BlockChain</th>
-                <th>DB</th>
-                <th>BlockChain</th>
-                <th>DB</th>
-                <th>BlockChain</th>
-                <th>DB</th>
-                <th>BlockChain</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- ejs 엔진에서 자바스크립트 코드로 인식하는 태그 -->
-            <% for (let i = 0; i < bc_data.length; i++) {%>
-                <tr>
-                    <td><%=date[i]%></td>
-                    <td><%=db_data[i][0]%></td>
-                    <td><%=bc_data[i][0]%></td>
-                    <td><%=db_data[i][1]%></td>
-                    <td><%=bc_data[i][1]%></td>
-                    <td><%=db_data[i][2]%></td>
-                    <td><%=bc_data[i][2]%></td>
-                    <td><%=db_data[i][3]%></td>
-                    <td><%=bc_data[i][3]%></td>
-                    <td><%=db_data[i][4]%></td>
-                    <td><%=bc_data[i][4]%></td>
-                    <td><%=bc_data[i][5]%></td>
-                </tr>
-            <%}%>
-        </tbody>
-    </table>
-</body>
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.118.2">
+    <title>Account Book</title>
+
+    <%- include('refer/head.ejs')%>
+
+  </head>
+  <body>
+    <%- include('refer/header.ejs')%>
+    <div class="container-fluid">
+      <div class="row">
+
+        <%- include('refer/sidebar.ejs')%>
+
+        <!-- 실제 api의 화면이 출력이되는 부분 -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+          <h2>Section title</h2>
+          <div class="table-responsive small">
+            <table class="table table-striped table-sm">
+              <thead>
+                  <tr>
+                      <th rowspan="2">기준년월</th>
+                      <th colspan="2">총 부가세(매입)</th>
+                      <th colspan="2">총 거래 금액(매입)</th>
+                      <th colspan="2">총 부가세(매출)</th>
+                      <th colspan="2">총 거래 금액(매출)</th>
+                      <th colspan="2">총 매출</th>
+                      <th rowspan="2">일치여부</th>
+                      <th rowspan="2">등록자</th>
+                  </tr>
+                  <tr>
+                      <th>DB</th>
+                      <th>BlockChain</th>
+                      <th>DB</th>
+                      <th>BlockChain</th>
+                      <th>DB</th>
+                      <th>BlockChain</th>
+                      <th>DB</th>
+                      <th>BlockChain</th>
+                      <th>DB</th>
+                      <th>BlockChain</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- ejs 엔진에서 자바스크립트 코드로 인식하는 태그 -->
+                  <% for (let i = 0; i < bc_data.length; i++) {%>
+                      <tr>
+                          <td><%=date[i]%></td>
+                          <td><%=db_data[i][0]%></td>
+                          <td><%=bc_data[i][0]%></td>
+                          <td><%=db_data[i][1]%></td>
+                          <td><%=bc_data[i][1]%></td>
+                          <td><%=db_data[i][2]%></td>
+                          <td><%=bc_data[i][2]%></td>
+                          <td><%=db_data[i][3]%></td>
+                          <td><%=bc_data[i][3]%></td>
+                          <td><%=db_data[i][4]%></td>
+                          <td><%=bc_data[i][4]%></td>
+                          <!-- 데이터베이스와 블록체인 데이터의 일치 여부 -->
+                          <% if(
+                              db_data[i][0] == bc_data[i][0] &
+                              db_data[i][1] == bc_data[i][1] &
+                              db_data[i][2] == bc_data[i][2] &
+                              db_data[i][3] == bc_data[i][3] &
+                              db_data[i][4] == bc_data[i][4] 
+                              ) {%>
+                                  <td style="color: white;background-color: blue;">
+                                      일치
+                                  </td>
+                          <%}else{%>
+                              <td style="color:white;background-color: red;">
+                                  불일치
+                              </td>
+                          <%}%>
+                          <td><%=bc_data[i][5]%></td>
+                      </tr>
+                  <%}%>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+
 </html>

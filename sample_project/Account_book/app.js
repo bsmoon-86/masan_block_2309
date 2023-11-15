@@ -48,11 +48,8 @@ if(!fs.existsSync(path2)){
 
 // localhost:3000/ 요청시 
 app.get('/', function(req, res){
-    if(!req.session.logined){
         res.redirect('/user')
-    }else{
-        res.redirect('/book')
-    }
+    
 })
 
 // 회원 관련 api들은 user.js에서 실행하도록 route 설정
