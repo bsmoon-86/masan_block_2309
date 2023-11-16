@@ -52,6 +52,17 @@ app.get('/', function(req, res){
     
 })
 
+app.get('/signout', function(req, res){
+    // 세션에서 로그인 데이터를 제거 
+    req.session.destroy(function(err){
+        if(err){
+            console.log(err)
+        }else{
+            res.redirect('/')
+        }
+    })
+})
+
 // 회원 관련 api들은 user.js에서 실행하도록 route 설정
 const user = require('./routes/user')()
 app.use('/user', user)
@@ -60,6 +71,10 @@ app.use('/user', user)
 const book = require('./routes/book')()
 app.use('/book', book)
 
+
+app.get('/test', function(req, res){
+    res.render('signin_old')
+})
 
 
 app.listen(port, function(){

@@ -32,7 +32,11 @@
                 <%} else{ %>
                     <p>이름 : <%=login_data.name%></p>
                     <p>소속 : <%=login_data.company%></p>
-                    <p>토큰 수량 : <%=login_data.amount%></p>
+                    <p>
+                      토큰 수량 : <%=login_data.amount%>
+                      <!-- 충전페이지로 이동하는 하이퍼링크 -->
+                      <a href="/user/charge">충전</a>  
+                    </p>
                     
                 <% }%>
             </div>
@@ -71,13 +75,14 @@
   
             <ul class="nav flex-column mb-auto">
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                <a class="nav-link d-flex align-items-center gap-2" href="/book/cate_add">
                   <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
-                  Settings
+                  장부 카테고리 추가
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                <!-- 하이퍼링크는 localhost:3000/signout 주소로 요청을 보낸다. -->
+                <a class="nav-link d-flex align-items-center gap-2" href="/signout">
                   <svg class="bi"><use xlink:href="#door-closed"/></svg>
                   Sign out
                 </a>

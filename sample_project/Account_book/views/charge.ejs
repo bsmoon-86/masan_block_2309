@@ -1,18 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <%- include('./refer/head.ejs')%>
-</head>
-<body>
-    <div class="container">
-        <form action="/user/charge2" method="get">
-            <label>Amount</label>
-            <input type="number" name="_amount"><br>
-            <input type="submit" value="충전">
-        </form>
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.118.2">
+    <title>Account Book</title>
+
+    <%- include('refer/head.ejs')%>
+
+  </head>
+  <body>
+    <%- include('refer/header.ejs')%>
+    <div class="container-fluid">
+      <div class="row">
+
+        <%- include('refer/sidebar.ejs')%>
+
+        <!-- 실제 api의 화면이 출력이되는 부분 -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+          <h2>Section title</h2>
+          <div class="table-responsive small">
+            <div class="container">
+              <form action="/user/charge2" method="get">
+                  <label>Amount</label>
+                  <input type="number" name="_amount"><br>
+                  <input type="submit" value="충전">
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-</body>
+  </body>
+
 </html>

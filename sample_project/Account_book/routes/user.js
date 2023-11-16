@@ -40,6 +40,17 @@ module.exports = function(){
                 'login_data' : ''
             })
         }else{
+            /* 
+                req.session.logined -> 
+                {
+                    id : xxxxx,
+                    password : xxxxx, 
+                    name : xxxx, 
+                    company : xxxx, 
+                    wallet_address : xxxxx, 
+                    private_key : xxxxx 
+                }
+            */
             // 로그인을 한 유저의 지갑에 있는 token양을 session 데이터와 같이 보낸다. 
             // 유저가 소유하고 있는 token양 -> kip7.js에 있는 balance() 함수를 호출하여 토큰의 양을 받아온다.
             // balance() 함수에서는 유저의 지갑 주소(세션 데이터 존재)가 필요
@@ -47,6 +58,18 @@ module.exports = function(){
             const token_amount = await kip7.balance(user_address)
             // data라는 변수에 token_amount 값을 추가 (json데이터에 새로운 키:벨류의 데이터를 추가)
             req.session.logined.amount = token_amount
+            /* 
+                req.session.logined -> 
+                {
+                    id : xxxxx,
+                    password : xxxxx, 
+                    name : xxxx, 
+                    company : xxxx, 
+                    wallet_address : xxxxx, 
+                    private_key : xxxxx , 
+                    amount : 토큰수량
+                }
+            */
             console.log("session data : ", req.session.logined)
             res.render('signin', {
                 'login_data' : req.session.logined
@@ -160,31 +183,16 @@ module.exports = function(){
         })
     })
 
-    // 내 정보를 출력하는 화면 api
-    router.get('/info', async function(req, res){
-        if(!req.session.logined){
-            res.redirect('/')
-        }else{
-            // 내 정보(로그인을 한 유저의 정보) 보여줄 데이터는 지갑의 주소, 토큰의 잔여량
-            const address = req.session.logined.wallet_address
-            // 내 토큰의 잔여량 확인하는 방법은?
-            // balance() 함수를 호출
-            const amount = await kip7.balance(address)
-            console.log('/info - wallet_address :', address)
-            console.log('/info - balance : ', amount)
-            res.render('myinfo', {
-                "wallet" : address,
-                "balance" : amount
-            })
-        }
-    })
 
     // 마일리지 충전 화면 api 
     router.get('/charge', function(req, res){
         if(!req.session.logined){
             res.redirect('/')
         }else{
-            res.render('charge')
+            res.render('charge', {
+                'login_data' : req.session.logined
+            }
+            )
         }
     })
 
@@ -200,8 +208,8 @@ module.exports = function(){
             // reference에 있는 kip.js의 transfer() 함수를 호출
             const result = await kip7.transfer(address, amount)
             console.log('/charge2 - kip7 transfer = ', result)
-            // 충전이 완료되었으면 내 정보 페이지로 이동
-            res.redirect('/user/info')
+            // 충전이 완료되었으면 main('/')으로 이동
+            res.redirect('/')
         }
 
     })

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.118.2">
+    <title>Account Book</title>
+
+    <%- include('refer/head.ejs')%>
+
+  </head>
+  <body>
+    <%- include('refer/header.ejs')%>
+    <div class="container-fluid">
+      <div class="row">
+
+        <%- include('refer/sidebar.ejs')%>
+
+        <!-- 실제 api의 화면이 출력이되는 부분 -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+          <h2>Section title</h2>
+          <div class="table-responsive small">
+            <form action="/book/cate_add2" method="post">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="input_type">매입 / 매출</span>
+                <select class="form-select" name="_type" aria-describedby="input_type">
+                    <option selected>매입 / 매출 선택</option>
+                    <option value="매입">매입</option>
+                    <option value="매출">매출</option>
+                </select>    
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="input_name">구분 명</span>
+                <input type="text" name="_name" class="form-control" aria-describedby="input_name">
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="input_name">구분 코드</span>
+                <input type="number" name="_code" class="form-control" aria-describedby="input_name">
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="input_name">과세 / 면세</span>
+                <div class="form-check form-check-inline" style="margin-left: 10px;;">
+                  <input class="form-check-input" type="radio" name="_vat" value="10">
+                  <label class="form-check-label" for="inlineRadio1">과세</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="_vat" value="0">
+                  <label class="form-check-label" for="inlineRadio2">면세</label>
+                </div>
+              </div>
+              <input type="submit" value="카테고리 추가" class="btn">
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+
+</html>

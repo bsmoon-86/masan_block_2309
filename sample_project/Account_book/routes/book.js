@@ -23,13 +23,6 @@ module.exports = function(){
 
     // book.js에서 기본 경로는 localhost:3000/book
 
-    router.get('/', function(req, res){
-        if(!req.session.logined){
-            res.redirect('/')
-        }else{
-            res.render('book.ejs')
-        }
-    })
 
     // 장부를 입력하는 api
     router.get('/add', async function(req, res){
@@ -61,11 +54,12 @@ module.exports = function(){
     router.get('/cate', async function(req, res){
         // 유저가 select로 선택한 값을 변수에 대입
         const type = req.query._type
+        const company = req.session.logined.company
         console.log(query.category)
         // DB에 저장되어있는 카테고리를 로드 
         const result = await mydb.execute(
             query.category, 
-            [type]
+            [type, company]
         )
         console.log('/cate - DB result :', result)
         res.json(result)
@@ -166,14 +160,6 @@ module.exports = function(){
         
     })
 
-    // 장부의 리스트를 확인하는 api
-    router.get('/list', async (req, res)=>{
-        if(!req.session.logined){
-            res.redirect('/')
-        }else{
-            res.render('book_list')
-        }
-    })
 
     // 장부의 데이터들을 유저에게 보내주는 비동기 통신 api
     router.get('/select_list', async function(req, res){
@@ -449,6 +435,37 @@ module.exports = function(){
                 'login_data' : req.session.logined
             })
         }
+    })
+
+    // 장부 카테고리를 추가할수 있는 화면 api 
+    router.get('/cate_add', function(req, res){
+        // 세션에 로그인 정보가 존재하지 않는다면 / 이동
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            res.render('add_cate', {
+                'login_data' : req.session.logined
+            }
+            )
+        }
+    })
+
+    // 장부 카테고리 추가 화면에서 보낸 데이터를 데이터베이스에 저장하는 api 
+    router.post('/cate_add2', async function(req, res){
+        // 유저가 보낸 카테고리 정보들을 변수에 대입 
+        const type = req.body._type
+        const name = req.body._name
+        const code = req.body._code
+        const vat = req.body._vat
+        console.log('/cate_add2 POST data - ', type, name, code, vat)
+        const company = req.session.logined.company
+
+        const result = await mydb.execute(
+            query.add_category, 
+            [type, code, name, vat, company]
+        )
+        console.log('/cate_add2 insert DB result - ', result)
+        res.redirect('/')
     })
 
 

@@ -5,7 +5,9 @@ const category = `
     from 
     account_category
     where
-    type = ?
+    type = ? 
+    and 
+    company in ('0', ?)
 `
 
 // 매출 장부 데이터 삽입 sql
@@ -179,6 +181,21 @@ const period_sales_sum = `
         concat(year, month) <= ?
 `
 
+const add_category = `
+        insert 
+        into 
+        account_category(
+                type,
+                code, 
+                name, 
+                vat,
+                company 
+        ) 
+        values (
+                ?, ?, ?, ?, ?
+        )
+`
+
 module.exports={
     category, 
     insert_purchase, 
@@ -193,5 +210,6 @@ module.exports={
     period_purchase, 
     period_sales, 
     period_purchase_sum, 
-    period_sales_sum
+    period_sales_sum, 
+    add_category
 }
