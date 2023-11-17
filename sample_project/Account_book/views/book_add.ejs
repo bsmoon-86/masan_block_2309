@@ -12,7 +12,7 @@
     <%- include('refer/head.ejs')%>
     <script>
       $(document).ready(function(){
-      // id가 select1인 태그가 변할때 라는 이벤트 리스너 생성
+      // id가 select1인 태그의 옵션 값이 변할때 라는 이벤트 리스너 생성
           $('#select1').change(function(){
               // 변경된 value 값을 로드 
               const type = $('#select1 option:selected').val()
@@ -22,13 +22,16 @@
                   {
                       url : '/book/cate', 
                       method : 'get', 
+                    //   서버가 유저에게 보내주는 응답메시지의 데이터 타입
                       dataType : 'json', 
+                    //   유저가 서버에게 보내주는 요청 데이터
                       data : {
                           "_type" : type
                       }
                   }
               )
               .done(function(result){
+                // result는 서버가 유저에게 보내준 응답 메시지
                   $('#select2 option').remove()
                   // select2에 option을 추가해준다. 
                   // result는 [{}, {}, {}, {}]
