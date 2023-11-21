@@ -1,0 +1,62 @@
+1. 디렉토리 이동
+    - cd /opt
+2. 새로운 폴더를 생성
+    - sudo mkdir nodejs
+3. nodejs 폴더로 이동
+    - cd nodejs
+4. nodejs 설치 파일을 다운 
+    - sudo wget https://nodejs.org/dist/v21.2.0/node-v21.2.0-linux-x64.tar.xz
+
+5. xz확장자 제거 
+    - sudo xz -d node-v21.2.0-linux-x64.tar.xz
+6. tar확장자 압축을 해제
+    - sudo tar xf node-v21.2.0-linux-x64.tar
+7. 링크 파일 생성 
+    - sudo ln -s /opt/nodejs/node-v21.2.0-linux-x64 /opt/nodejs/node
+
+8. 환경 변수 설정 (해당하는 경로에 있는 파일들을 어디서든 사용이 가능하도록 경로 설정)
+    - nano ~/.bashrc
+        - vi는 텍스트에디터 -> 'i'키를 누르면 insert모드로 변경(수정이 가능)
+        - esc 눌러서 insert 모드를 해제
+        - :wq를 입력하고 엔터키를 누르면 저장하고 종료
+    - 가장 마지막 라인에 코드를 추가
+        - export PATH="$PATH:/opt/nodejs/node/bin"
+        - Ctrl+X : 저장 여부를 물으면 'Y' 누르고 엔터 
+    - 변경된 설정을 적용 
+        - source ~/.bashrc
+
+9. nodejs 의 버전을 확인 
+    - node -v
+    - npm -v
+
+10. server test 
+    - cd /
+    - sudo mkdir test-server
+    - cd test-server
+    - npm install express
+    - nano app.js
+        const express = require('express')
+        const app = express()
+
+        app.get("/", function(req, res){
+            res.send('Hello World')
+        })
+
+        app.listen(80, function(){
+            console.log('Server Start')
+        })
+
+
+mysql 설치 
+
+1. apt-get 을 업데이트
+    - sudo apt-get update
+2. apt-get을 이용하여 mysql-server 설치 
+    - sudo apt-get install mysql-server
+3. mysql version 확인
+    - mysql --version
+4. mysql 접속 
+    - mysql -u root
+5. Database 생성 
+    - CREATE DATABASE blockchain;
+    

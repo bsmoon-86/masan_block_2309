@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 변수 선언 
+        let accounts;
+
+        window.onload = function(){
+            if (window.ethereum){
+                this.ethereum.on('accountsChanged', handleAccountsChanged);
+                    window.ethereum.request({
+                        method : 'eth_accounts'
+                    })
+                .then(handleAccountsChanged)
+                .catch((err)=>{
+                    console.log(err)
+                })
+            }else{
+                alert('메타마스크 설치가 필요')
+            }
+        }
+
+
+
+        const handleAccountsChanged = (acc)=>{
+            // 변경된 지갑의 주소를 accounts에 대입
+            accounts = acc;
+        }
+
+        // Metamask 연결 요청
+        const enableEth = async () => {
+            accounts = await window.ethereum.request({
+                method : 'eth_requestAccounts'
+            })
+            .catch(function(err){
+                console.log(err.code)
+            })
+            console.log(accounts)
+        }
+        // 연결된 계정의 잔액 조회 
+        const checkEthBalance = async () => {
+            let balance = await window.ethereum.request({
+                method : 'eth_getBalance', 
+                params : [accounts[0], 'latest']
+            })
+            .catch(function(err){
+                console.log(err)
+            })
+            balance = parseInt(balance)
+            balance = balance / Math.pow(10, 18)
+            console.log(balance)
+        }
+
+    </script>
+</head>
+<body>
+    <!-- 버튼 메타마스크 연결 , 메타마스크에 있는 이더의 잔액 조회 -->
+    <button onclick="enableEth()">메타마스크 연결</button>
+    <button onclick="checkEthBalance()">잔액 조회</button>
+</body>
+</html>

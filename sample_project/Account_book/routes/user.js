@@ -79,6 +79,45 @@ module.exports = function(){
 
     // 로그인 api 생성
     router.post("/signin", async function(req, res){
+        /*
+            request(요청) 데이터 안에 유저 보낸 데이터가 존재
+
+            get 방식으로 데이터를 보낸다면 
+                http://localhost:3000/signin?_id=value&_pass=value2
+                request -> {
+                    'xxx' : xxxxx, 
+                    xxxx : xxxxxxx, 
+                    xxxxx : xxxxxx, 
+                    'query' : {
+                        '_id' : 유저가 입력한 아이디, 
+                        '_pass' : 유저가 입력한 패스워드
+                    }, 
+                    xxxx : xxxxxxxxx, 
+                }
+            post 방식으로 데이터를 보낸다면 
+                http://localhost:3000/signin?key=value&key2=value2
+                request -> {
+                    'xxx' : xxxxx, 
+                    xxxx : xxxxxxx, 
+                    'params' : xxxxxx, 
+                    'query' : {
+                        key : value, 
+                        key2 : value2
+                    }, 
+                    xxxx : xxxxxxxxx,
+                    'body' : {
+                        '_id' : 유저가 입력한 아이디, 
+                        '_pass' : 유저가 입력한 패스워드
+                    }
+                }
+
+            유저가 보낸 데이터의 형태 
+            {
+                '_id' : 유저가 입력한 아이디, 
+                '_pass' : 유저가 입력한 패스워드
+            }
+        */
+
         // 유저가 보낸 id, pass를 변수 대입 확인
         const id = req.body._id
         const pass = req.body._pass
