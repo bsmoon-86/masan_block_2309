@@ -1,0 +1,24 @@
+{
+  "name": "survey",
+  "version": "1.0.0",
+  "description": "설문조사 데이터를 블록체인 네트워크상에 저장 프로젝트",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "caver-js-ext-kas": "^1.12.0",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.6.5",
+    "web3": "1.10.0"
+  }
+}
