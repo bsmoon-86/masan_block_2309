@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+    <script>
+        // $(document).ready() : html 파일이 로드가 되었을때
+        $(document).ready(function(){
+            // info 아이디 값을 가진 태그를 숨긴다. 
+            $('#info').hide()
+            // check_id 아이디값을 가진 태그가 클릭했을 때
+            $('#check_id').click(function(){
+                // input_id라는 아이디값을 가진 태그의 입력 값을 로드 
+                const input_id = $('#input_id').val()
+                // Ajax 비동기 통신을 이용하여 서버에게 데이터를 보낸다. 
+                $.ajax(
+                    {
+                        url : '/ajax/check_id', 
+                        method : 'get', 
+                        data : {
+                            '_id' : input_id
+                        }, 
+                        dataType : 'json'
+                    }
+                ).then(function(result){
+                    // result는 비동기 통신이 완료 후 서버가 유저에게 보내주는 데이터 
+                    // dataType를 json이라고 설정 -> result의 데이터의 타입은 자료형 데이터( list, json )
+                    console.log(result)
+                    // result 는 {'check' : true | false}
+                    // true는 사용이 가능
+                    // false는 사용이 불가능
+                    if(result.check){
+                        // 사용이 가능한 아이디
+                        // info라는 아이디 값을 가진 태그를 보여준다. 
+                        $('#info').show()
+                        // check_id라는 아이디 값을 가진 태그를 숨긴다. 
+                        $('#check_id').hide()
+                        // input_id라는 아이디 값을 가진 태그를 수정 불가능 상태(읽기 전용)로 변경
+                        $('#input_id').attr('readonly', true)
+                    }else{
+                        // 사용 불가능한 아이디라면 
+                        alert('사용이 불가능한 아이디입니다.')
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+    <!-- 상단 메뉴바 -->
+    <%- include('./refer/menu.ejs')%>
+
+    <div class="container">
+        <h1>회원 가입 </h1>
+        <div class="container">
+            <!-- 회원의 정보를 입력하는 공간 -->
+            <form action="/user/signup2" method="post">
+                <!-- 회원 정보는 ID, PASSWORD, NAME, AGE -->
+                <div class="input-group mb-3">
+                    <input type="text" id="input_id" name="_id" class="form-control" placeholder="ID">
+                </div>
+                <p class="btn" id="check_id">아이디 중복체크</p>
+                <!-- 아이디 중복 체크 -->
+                <div id="info">
+                    <div class="input-group mb-3">
+                        <input type="password" name="_pass" class="form-control" placeholder="PASSWORD">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="_name" class="form-control" placeholder="NAME">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="_age" class="form-control" placeholder="AGE">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <input type="submit" class="btn" value='회원가입'>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

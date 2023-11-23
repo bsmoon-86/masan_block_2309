@@ -61,7 +61,10 @@ module.exports = function(){
         if(req.session.logined){
             res.redirect('/')
         }else{
-            res.render('signup')
+            res.render('signup', {
+                'login' : false, 
+                'name' : ''
+            })
         }
     })
 
@@ -92,6 +95,19 @@ module.exports = function(){
         console.log('/signup : DB result = ', sql_result)
         // 작업이 모두 완료되면 main page 이동
         res.redirect('/')
+    })
+
+    // 로그아웃 api 생성
+    router.get('/logout', function(req, res){
+        // 세션에 있는 로그인 데이터를 제거 
+        req.session.destroy(function(err){
+            if(err){
+                console.log(err)
+            }else{
+                // 세션데이터가 정상적으로 제거가 되면 localhost:3000 돌아간다. 
+                res.redirect('/')
+            }
+        })
     })
 
 

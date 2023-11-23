@@ -47,6 +47,17 @@
         })
 
 
+리눅스 환경에서 방화벽 규칙 설정
+
+- 특정 포트번호 방화벽 해제
+iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
+    - -I: 방화벽에 새로운 규칙 생성
+    - -p: 패킷 프로토콜 지정
+    - --dport: 포트번호 설정
+    - -j: 규칙에 해당되는 패킷을 어떻게 처리할것인가
+
+
+
 mysql 설치 
 
 1. apt-get 을 업데이트
@@ -59,4 +70,8 @@ mysql 설치
     - mysql -u root
 5. Database 생성 
     - CREATE DATABASE blockchain;
+
+6. mysql에서 root password를 지정
+    - use mysql; ( mysql이라는 이름의 데이터베이스를 사용 )
+    - ALTER user 'root'@'localhost' identified with mysql_native_password by '새로운 패스워드';
     

@@ -1,0 +1,51 @@
+
+
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+        <!-- 상단의 일반 메뉴(설문 리스트, 설문 내역) -->
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="#" class="nav-link px-2 link-secondary">설문 리스트</a></li>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">설문 내역 조회</a></li>
+          <li><a href='/survey/regist' class='nav-link px-2 link-body-emphasis'>설문 등록</a></li>
+        </ul>
+        <!-- 로그인 영역 -->
+        <!-- 로그인이 되어있다면 이름을 표시  -->
+        <!-- 로그인이 되어있지 않다면 id, password 입력하는 input 생성 -->
+        <% if (login) {%>
+
+          <!-- 로그인이 되어있는 상황 -->
+          <!-- 드랍 다운 메뉴 (내 정보, 참여한 설문 내역 ,회원 탈퇴, 로그아웃)  -->
+          <div class="dropdown text-end">
+            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <%=name%>님 안녕하세요
+            </a>
+            <!-- br : 줄바꿈, hr : 선 대입  -->
+            <ul class="dropdown-menu text-small">
+              <li><a class="dropdown-item" href="#">내 정보</a></li>
+              <li><a class="dropdown-item" href="#">참여한 설문 내역</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">회원 탈퇴</a></li>
+              <li><a class="dropdown-item" href="/user/logout">로그아웃</a></li>
+            </ul>
+          </div>
+        <%}else{%>
+          <!-- 로그인이 되어있지 않은 상황 -->
+          <form action="/user" method="post" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+              <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                  <li><input type="text" name="_id" class="form-control" placeholder="ID"></li>
+                  <li><input type="password" name="_pass" class="form-control" placeholder="PASSWORD"></li>
+                  <li>
+                      <input type="submit" value="로그인" class="btn">
+                      <a href="/user/signup" class="btn">회원 가입</a>
+                  </li>
+              </ul>
+          </form>
+        <%}%>
+
+
+
+      </div>
+    </div>
+  </header>

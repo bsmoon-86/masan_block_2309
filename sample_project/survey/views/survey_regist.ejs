@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+</head>
+<body>
+    <%- include("./refer/menu.ejs")%>
+
+    <!-- 설문의 질문 정보를 입력하는 페이지 -->
+    <div class="container">
+        <h1>설문 정보 등록</h1>
+        <div class="container">
+            <form action="/survey/regist2" method="get">
+                <% for(let i = 1; i < 4; i++){ %>
+                    <hr>
+                    <div class="input-group mb-3">
+                        <input type="text" name="question" class="form-control" placeholder="question">
+                    </div>
+                    <div class="input-group mb-3">
+                        <!-- 
+                            for문이 첫번째 반복인 경우 i = 1
+                            name = 'answer<%=i%>' -> name = 'answer1'
+                            for문이 두번째 반복인 경우 i = 2
+                            name = 'answer<%=i%>' -> name = 'answer2'
+                            for문이 세번째 반복인 경우 i = 3
+                            name = 'answer<%=i%>' -> name = 'answer3'
+                         -->
+                        <input type="text" name="answer<%=i%>" class="form-control" placeholder="answer1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="answer<%=i%>" class="form-control" placeholder="answer2">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="answer<%=i%>" class="form-control" placeholder="answer3">
+                    </div>
+                    <hr>
+                <% } %>
+                <input type="submit" class="btn" value="설문 등록">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
