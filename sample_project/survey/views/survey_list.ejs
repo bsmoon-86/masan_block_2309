@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+    <script>
+        function view_survey(_no){
+            // 주소에 데이터를 담아서 보내는 형태 
+            // query (localhost:3000/survey/view?no=_no)
+            // params (loclhost:3000/survey/view/_no)
+            location.href="/survey/view/"+_no
+        }
+    </script>
+</head>
+<body>
+    <%- include('./refer/menu.ejs') %>
+    <div  class="container">
+        <h1>설문 조사 목록</h1>
+        <div class="container">
+            <!-- data_list 변수를 원소의 개수만큼 반복하여 리스트 태그 생성
+                data_list 데이터 타입? -> [{'no':, 'q1':, 'a1':, ...}]
+            -->
+            <!-- data_list의 길이만큼 반복 실행 -->
+            <% for (let i = 0; i < data_list.length; i++) {%>
+                <ul class="list-group list-group-horizontal"
+                onclick = 'view_survey(<%=data_list[i]["no"]%>)'>
+                    <li class="list-group-item"><%=i+1%></li>
+                    <li class="list-group-item"><%=data_list[i]['q1']%></li>
+                    <li class="list-group-item"><%=data_list[i]['q2']%></li>
+                    <li class="list-group-item"><%=data_list[i]['q3']%></li>
+                </ul>
+            <%}%>
+        </div>
+    </div>
+    
+</body>
+</html>

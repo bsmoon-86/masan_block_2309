@@ -46,6 +46,16 @@
 
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 
+// 바보밥 네트워크에 대한 정보를 추가 
+require('dotenv').config()
+// 바오밥 테스트넷에 contract를 배포하기 위한 지갑의 private_key
+const private = process.env.private_key
+// 바오밥 테스트넷의 주소를 입력 
+const url = "https://api.baobab.klaytn.net:8651"
+// 클레이튼에 contract를 배포하기 위한 라이브러리 로드 
+const HDWalletProvider = require('truffle-hdwallet-provider-klaytn')
+
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -58,6 +68,12 @@ module.exports = {
    */
 
   networks: {
+    baobab : {
+      provider : new HDWalletProvider(private, url), 
+      network_id : 1001, 
+      gas : 20000000, 
+      gasPrice : null
+    }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache, geth, or parity) in a separate terminal

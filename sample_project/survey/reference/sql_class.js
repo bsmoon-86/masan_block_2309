@@ -5,7 +5,13 @@ const mysql = require('mysql2')
 class Mysql{
 
     // 생성자 함수 : 데이터베이스 서버의 정보를 저장
-    constructor(_host, _port, _user, _pass, _db){
+    constructor(
+        _host = '127.0.0.1', 
+        _port = 3306, 
+        _user = 'root', 
+        _pass = '1234', 
+        _db = 'blockchain'
+        ){
         this.pool = mysql.createPool({
             host : _host, 
             port : _port, 
