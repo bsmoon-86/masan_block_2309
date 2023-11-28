@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+</head>
+<body>
+    <%- include("./refer/menu.ejs")%>
+    <div class="container">
+        <h1>설문 답변 내역</h1>
+        <div class="container">
+            <!-- table의 형태로 답변의 내역들을 표시 -->
+            <table class="table">
+                <tr>
+                    <th rowspan="2">유저의 지갑 주소</th>
+                    <th colspan="3"><%=survey[0]['q1']%></th>
+                    <th colspan="3"><%=survey[0]['q2']%></th>
+                    <th colspan="3"><%=survey[0]['q3']%></th>
+                </tr>
+                <tr>
+                    <% for (let i = 0; i < answer.length; i++) {%>
+                        <%for (let j =0; j < answer[i].length; j++) {%>
+                            <td><%=answer[i][j]%></td>
+                        <%}%>
+                    <%}%>
+                </tr>
+
+                <!-- 유저의 답변 내역은 내역의 데이터의 개수 만큼 반복  -->
+                <%for (let j = 0; j < answers.length; j++){%>
+                    <tr>
+                        <td><%=answers[j]['user_wallet']%></td>
+                        <!-- 1번 질문에 대한 답변이 0이면 첫번째 <tr>o</tr><tr></tr><tr></tr> -->
+                        <!-- 
+                            answers -> [
+                                            {
+                                                no: 1,
+                                                survey_no: 2,
+                                                user_wallet: '0x47a63dbf56ea0158e86e2f8dcd30b002b7d95cd6',
+                                                answer1: 1,
+                                                answer2: 2,
+                                                answer3: 0
+                                            }
+                                        ] 
+                            answers[0]['answer1'] -> 1 -> 2번 답변을 선택
+                        -->
+                        <%for (let i = 0;i < 3; i++){%>   
+                            <!-- i는 0, 1, 2 총 3번 반복 -->
+                            <% if (i == answers[j]['answer1']) {%>
+                                <!-- i의 값과 1번 질문에 대한 답 데이터가 같을때 -->
+                                <td>o</td>
+                            <%}else{%>
+                                <!-- i의 값과 1번 질문에 대한 답 데이터가 다른 경우 -->
+                                <td></td>
+                            <%}%>
+                        <%}%>
+                        <%for (let i = 0;i < 3; i++){%>
+                            <% if (i == answers[j]['answer2']) {%>
+                                <td>o</td>
+                            <%}else{%>
+                                <td></td>
+                            <%}%>
+                        <%}%>
+                        <%for (let i = 0;i < 3; i++){%>
+                            <% if (i == answers[j]['answer3']) {%>
+                                <td>o</td>
+                            <%}else{%>
+                                <td></td>
+                            <%}%>
+                        <%}%>
+                    </tr>
+                <%}%>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>

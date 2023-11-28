@@ -87,60 +87,27 @@ module.exports = function(){
         }
     })
 
-    router.get('/view/:_mo', async function(req, res){
+    router.get('/history', async function(req, res){
         if(!req.session.logined){
             res.redirect('/')
         }else{
-            const no = req.params._mo
-            console.log('/survey/view : no =', no)
             sql = `
                 select 
                 * 
                 from 
-                survey_list 
-                where 
-                no = ?
+                survey_list
             `
-            values = [no]
             const db_result = await mydb.execute(
-                sql, values
+                sql
             )
-            console.log('/survey/view : DB_result =', db_result)
-            // db_result를 질문은 질문대로 
-            // 답변은 답변대로 변수에 대입 
-            // db_result의 길이는? -> 0 | 1 -> 둘중에 하나인 이유? -> 기본키를 같다라는 조건식으로 사용
-            // db_result[0] -> {  }
-            const q1 = db_result[0]['q1']
-            const q2 = db_result[0]['q2']
-            const q3 = db_result[0]['q3']
-            // eval() : 문자열 데이터를 JS코드로 해석하여 실행
-            const a1 = eval(db_result[0]['a1'])
-            const a2 = eval(db_result[0]['a2'])
-            const a3 = eval(db_result[0]['a3'])
-            // console.log(a1[0])
-            res.render('survey_test', {
-                'login' : true, 
+            console.log('/survey/history : DB_result = ', db_result)
+
+            res.render('survey_history', {
                 'name' : req.session.logined.name, 
-                'no' : no,
-                'q' : [q1, q2, q3], 
-                'a' : [a1, a2, a3]
+                'login' : true, 
+                'data_list' : db_result
             })
         }
-    })
-
-    // 설문의 답변을 받아오는 api 
-    router.post('/submit', async function(req, res){
-        // 유저가 보내는 데이터 
-        const a1 = req.body.a1
-        const a2 = req.body.a2
-        const a3 = req.body.a3
-        console.log('/survey/submit : req.data =', a1, a2, a3)
-        // 해당하는 답변을 blockchain에 데이터를 저장
-        // 같은 데이터를 DB survey_answers table에도 저장
-        const address = req.session.logined.wallet
-        const no = req.body.no
-        console.log(address, no, [a1,a2,a3])
-        res.send('TEST')
     })
 
 
