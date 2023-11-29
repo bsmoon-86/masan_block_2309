@@ -47,8 +47,11 @@
                         -->
                         <%for (let i = 0;i < 3; i++){%>   
                             <!-- i는 0, 1, 2 총 3번 반복 -->
-                            <% if (i == answers[j]['answer1']) {%>
-                                <!-- i의 값과 1번 질문에 대한 답 데이터가 같을때 -->
+                            <% if (
+                                (i == answers[j]['answer1']) && 
+                                (answers[j]['answer1'] == bc_answers[j][0]) ) 
+                                {%>
+                                <!-- i의 값과 1번 질문에 대한 답 데이터가 같고  bc_answer와 같은지 비교 -->
                                 <td>o</td>
                             <%}else{%>
                                 <!-- i의 값과 1번 질문에 대한 답 데이터가 다른 경우 -->
@@ -56,14 +59,20 @@
                             <%}%>
                         <%}%>
                         <%for (let i = 0;i < 3; i++){%>
-                            <% if (i == answers[j]['answer2']) {%>
+                            <% if (
+                                (i == answers[j]['answer2']) && 
+                                (answers[j]['answer2'] == bc_answers[j][1]) ) 
+                                {%>
                                 <td>o</td>
                             <%}else{%>
                                 <td></td>
                             <%}%>
                         <%}%>
                         <%for (let i = 0;i < 3; i++){%>
-                            <% if (i == answers[j]['answer3']) {%>
+                            <% if (
+                                (i == answers[j]['answer3']) && 
+                                (answers[j]['answer3'] == bc_answers[j][2]) ) 
+                                {%>
                                 <td>o</td>
                             <%}else{%>
                                 <td></td>
@@ -77,3 +86,27 @@
     
 </body>
 </html>
+
+<!-- 
+
+answers =  [
+  {
+    no: 1,
+    survey_no: 2,
+    user_wallet: '0x47a63dbf56ea0158e86e2f8dcd30b002b7d95cd6',
+    answer1: 1,
+    answer2: 2,
+    answer3: 0
+  },
+  {
+    no: 3,
+    survey_no: 2,
+    user_wallet: '0xb087f4f79d5f0a8e1dc727675b90262ff331a14b',
+    answer1: 0,
+    answer2: 0,
+    answer3: 0
+  }
+]
+answers[0]['answer1'] == bc_answer[0][0]
+bc_answer =  [ [ '1', '2', '0' ], [ '0', '0', '0' ] ]
+ -->

@@ -110,6 +110,117 @@ module.exports = function(){
         })
     })
 
+    router.get('/survey_confirm', async function(req, res){
+        // 로그인을 한 유저의 지갑 주소를 기준으로 하여 
+        // DB에 있는 답변 내역을 불러온다. 
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            const address = req.session.logined.wallet
+            sql = `
+                select 
+                * 
+                from 
+                survey_answers 
+                where 
+                user_wallet = ?
+            `
+            values = [address]
+            const db_result = await mydb.execute(
+                sql, values
+            )
+            console.log('/user/survey_cofirm : DB_result = ', db_result)
+            res.render('survey_confirm', {
+                'name' : req.session.logined.name, 
+                'login' : true,
+                'data' : db_result
+            })
+        }
+    })
+
+    router.get('/remove', function(req, res){
+        if(!req.session.logined){
+            res.redirect('/')
+        }else{
+            res.render('user_remove', {
+                'login' : true, 
+                'name' : req.session.logined.name
+            })
+        }
+    })
+
+    router.get('/remove2/:check', async function(req, res){
+        // 설문 내역을 지울것인가 데이터를 변수에 대입
+        const data_check = req.params.check
+        // 회원 정보를 제거하기 위해서는 필요한 데이터는? 로그인 한 회원 아이디
+        const id = req.session.logined.id
+        // 회원 정보를 제거하는 sql문
+        sql = `
+            delete 
+            from 
+            survey_user
+            where 
+            id = ?
+        `
+        values = [id]
+        const db_result = mydb.execute(
+            sql, values
+        )
+        console.log('/user/remove2 : DB_result = ', db_result)
+        // 회원 탈퇴하는 계정의 설문 내역을 제거 
+        if(data_check == 1){
+            // survey_answers에서 유저의 내역을 지우려면 
+            // 필요한 데이터가 로그인을 한 유저의 지갑 주소
+            const address = req.session.logined.wallet
+            sql = `
+                delete 
+                from 
+                survey_answers
+                where 
+                user_wallet = ?
+            `
+            values = [address]
+            const db_result2 = mydb.execute(
+                sql, values
+            )
+            console.log('/user/remove2 : DB_result2 = ', db_result2)
+        }
+        // 데이터가 모두 제거가 되었으면 
+        // session에 데이터를 제거 
+        req.session.destroy(function(err){
+            if(err){
+                console.log(err)
+            }else{
+                res.redirect('/')
+            }
+        })
+    })
+
+    router.get('/info', async function(req, res){
+        // 회원 정보를 불러오기 위해서 필요한 데이터는? -> 로그인을 한 아이디
+        const id = req.session.logined.id
+
+        sql = `
+            select 
+            * 
+            from 
+            survey_user
+            where 
+            id = ?
+        `
+        values = [id]
+        const db_result = await mydb.execute(
+            sql, values
+        )
+        console.log('/user/info : DB_result =', db_result)
+
+        res.render('user_info', {
+            'login' : true, 
+            'name' : req.session.logined.name, 
+            'info' : db_result
+        })
+    })
+
 
     return router
 }

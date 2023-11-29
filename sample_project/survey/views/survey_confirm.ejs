@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include("./refer/head.ejs")%>
+</head>
+<body>
+    <%- include('./refer/menu.ejs')%>
+    <div class="container">
+        <h1>참여한 설문 내역</h1>
+        <div class="container">
+            <table class="table">
+                <tr>
+                    <th>설문 번호</th>
+                    <th>답변 내역</th>
+                </tr>
+                <!-- 서버가 보내준 데이터를 테이블에 대입 -->
+                <% for (let i of data) {%>
+                    <!-- i의 데이터 형태 {} -->
+                    <tr>
+                        <td><%=i['survey_no']%></td>
+                        <td><%=[ i.answer1, i.answer2, i.answer3 ]%></td>
+                    </tr>
+                <%}%>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

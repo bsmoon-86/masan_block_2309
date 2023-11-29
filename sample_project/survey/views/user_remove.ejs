@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+    <script>
+        $(document).ready(function(){
+            // id가 check인 태그를 선택해서 해당하는 부분에 유저가 입력을 할때마다
+            $('#check').keyup(function(){
+                // this 의미하는 것은? -> 이벤트 함수가 실행이되는 주체 태그
+                const check = $(this).val()
+                // check가 '회원탈퇴' 같아지면 id가 user_remove인 태그를 사용 가능으로 변경
+                if (check == '회원탈퇴'){
+                    $('#user_remove').attr('disabled', false)
+                }else{
+                    $('#user_remove').attr('disabled', true)
+                }
+                // console.log(document.getElementById('data_check').checked)
+            })
+            // id가 user_remove 태그를 선택해서 클릭했을 때 
+            $('#user_remove').click(function(){
+                const is_checked = document.getElementById('data_check').checked
+                // 회원 데이터베이스를 삭제하는 주소로 이동
+                if(is_checked){
+                    location.href='/user/remove2/1'
+                }else{
+                    location.href='/user/remove2/0'
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+    <%- include('./refer/menu.ejs')%>
+    <div class='container'>
+        <h1>회원 탈퇴</h1>
+        <div class="container">
+            <p>
+                회원 탈퇴를 하시려면 '회원탈퇴'를 입력해주세요
+            </p>
+            <input type="text" id="check"><br>
+            <label for="data_check">참여 설문 내역 제거</label>
+            <input type="checkbox" id="data_check" value="1">
+            <button class="btn btn-danger" id="user_remove" disabled>회원 탈퇴</button>
+        </div>
+    </div>
+    
+</body>
+</html>

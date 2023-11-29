@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('./refer/head.ejs')%>
+</head>
+<body>
+    <%- include('./refer/menu.ejs')%>
+    <div class="container">
+        <h1>
+            회원 정보
+        </h1>
+        <div class="container">
+            <p>아이디 : <%=info[0]['id']%></p>
+            <p>이름 : <%=info[0]['name']%></p>
+            <p>나이 : <%=info[0]['age']%></p>
+            <p>지갑 주소 : <%=info[0]['wallet']%></p>
+        </div>
+    </div>
+</body>
+</html>

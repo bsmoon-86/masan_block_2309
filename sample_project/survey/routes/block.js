@@ -207,12 +207,31 @@ module.exports = function(){
         const answer2 = eval(survey_detail[0]['a2']) //2번 질문에 대한 답 리스트
         const answer3 = eval(survey_detail[0]['a3']) //3번 질문에 대한 답 리스트
         console.log('/block/answer_list : answer_list = ', answer_list)
+
+        let bc_result = []
+        // smartcontract을 이용하여 저장한 데이터를 로드 
+        for (let data of answer_list){
+            // data 데이터 타입은? 배열에 있는 각 원소들이 data 담겨서 반복 실행
+            // data -> { key : value, key2 : value2, ... }
+            let address = data.user_wallet
+            let bc_content = await smartcontract
+                                .methods
+                                .view_survey(
+                                    no, 
+                                    address
+                                )
+                                .call()
+            bc_result.push(bc_content)
+        }
+        console.log('answer BC_result = ', bc_result)
+
         res.render('answer_list', {
             'name' : req.session.logined.name, 
             'login' : true, 
             'survey' : survey_detail, 
             'answer' : [answer1, answer2, answer3], // 2차원 리스트
-            'answers' : answer_list
+            'answers' : answer_list, 
+            'bc_answers' : bc_result
         })
     })
 
